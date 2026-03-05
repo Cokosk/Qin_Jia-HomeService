@@ -19,31 +19,15 @@
 | Maven | 3.9+ | 构建工具 |
 | JDK | 22 | Java版本 |
 
-### 前端（待开发）
-- 用户端：微信小程序（原生）
-- 服务者端：微信小程序
-- 管理后台：Vue 3 + Element Plus
-
-## 核心功能
-
-### 用户端
-- ✅ 首页服务分类、热门服务列表（Redis缓存）
-- ✅ 服务详情页（Redis缓存）
-- ✅ 预约下单
-- ✅ 订单列表/详情
-- ✅ 评价订单
-
-### 服务者端
-- ✅ 可抢订单列表（从Redis抢单池获取）
-- ✅ 抢单（Redis分布式锁 + 限流）
-- ✅ 我的日程
-- ✅ 收入查看
-
-### 管理后台
-- 用户管理
-- 服务者审核
-- 订单管理
-- 服务项目管理
+### 前端（管理后台）
+| 技术 | 版本 | 说明 |
+|------|------|------|
+| Vue | 3.4+ | 前端框架 |
+| Element Plus | 2.5+ | UI组件库 |
+| Vite | 5.0+ | 构建工具 |
+| Axios | 1.6+ | HTTP客户端 |
+| Pinia | 2.1+ | 状态管理 |
+| Vue Router | 4.2+ | 路由管理 |
 
 ## 项目结构
 
@@ -53,41 +37,56 @@ home-serve/
 │   ├── src/main/
 │   │   ├── java/com/cokosk/homeserve/
 │   │   │   ├── config/          # 配置类
-│   │   │   │   ├── RedisConfig.java           # Redis配置
-│   │   │   │   └── MyBatisPlusConfig.java     # MyBatis配置
-│   │   │   ├── controller/    # 控制器
-│   │   │   │   ├── UserController.java        # 用户接口
-│   │   │   │   ├── ServiceController.java     # 服务接口
-│   │   │   │   ├── OrderController.java       # 抢单接口
-│   │   │   │   ├── OrderQueryController.java  # 订单查询
-│   │   │   │   └── HealthController.java      # 健康检查
-│   │   │   ├── service/       # 业务逻辑
-│   │   │   │   ├── UserService.java           # 用户服务
-│   │   │   │   ├── ServiceCategoryService.java # 分类服务
-│   │   │   │   ├── ServiceItemService.java    # 服务项目
-│   │   │   │   └── OrderService.java          # 订单服务(抢单核心)
-│   │   │   ├── mapper/        # 数据访问
-│   │   │   ├── entity/        # 实体类
-│   │   │   ├── lock/          # 分布式锁
-│   │   │   │   ├── DistributedLock.java       # 分布式锁工具
-│   │   │   │   └── RateLimiter.java           # 接口限流
-│   │   │   ├── utils/         # 工具类
-│   │   │   │   └── AsyncQueueConsumer.java    # 异步队列消费
-│   │   │   └── HomeServeApplication.java      # 启动类
+│   │   │   ├── controller/       # 控制器
+│   │   │   ├── service/         # 业务逻辑
+│   │   │   ├── mapper/          # 数据访问
+│   │   │   ├── entity/           # 实体类
+│   │   │   ├── lock/            # 分布式锁
+│   │   │   └── utils/           # 工具类
 │   │   └── resources/
-│   │       └── application.yml               # 配置文件
+│   │       └── application.yml  # 配置文件
 │   └── pom.xml
+│
+├── front-admin/                 # 前端管理后台
+│   ├── src/
+│   │   ├── api/                 # API封装
+│   │   ├── router/              # 路由配置
+│   │   ├── views/               # 页面组件
+│   │   │   ├── Home.vue         # 首页/数据概览
+│   │   │   ├── Orders.vue       # 订单管理
+│   │   │   ├── Services.vue     # 服务管理
+│   │   │   ├── Users.vue        # 用户管理
+│   │   │   └── Workers.vue      # 服务者管理
+│   │   ├── App.vue              # 根组件
+│   │   └── main.js              # 入口文件
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
+│
 ├── docs/                        # 文档
 ├── sql/                         # 数据库脚本
-│   └── init.sql                 # 初始化脚本
 ├── nginx/                       # Nginx配置
-│   └── nginx.conf
-├── docker-compose.yml           # Docker编排
+├── docker-compose.yml          # Docker编排
 ├── Dockerfile                   # 后端镜像
 ├── deploy.sh                    # 部署脚本
-├── .gitignore
 └── README.md
 ```
+
+## 核心功能
+
+### 后端API
+- ✅ 用户模块：登录/注册/信息缓存
+- ✅ 服务模块：分类列表、服务列表、详情（Redis缓存）
+- ✅ 订单模块：创建订单、抢单（分布式锁+限流）
+- ✅ 订单查询：用户/服务者订单列表
+- ✅ 异步队列：抢单通知、支付处理
+
+### 前端管理后台
+- ✅ 首页：数据概览、热门服务、最新订单
+- ✅ 订单管理：订单列表、搜索筛选、详情查看、取消订单
+- ✅ 服务管理：分类管理、服务项目管理
+- ✅ 用户管理：用户列表、状态管理
+- ✅ 服务者管理：服务者列表、审核管理
 
 ## Redis应用设计（核心亮点）
 
@@ -120,8 +119,55 @@ key: rate:limit:{ip}:{api}
 | `queue:order:grabbed` | 抢单成功通知 |
 | `queue:payment:success` | 支付成功处理 |
 
-### 5. 抢单池
-使用Sorted Set存储待抢订单，按创建时间排序
+## 快速启动
+
+### 方式一：分别启动（开发模式）
+
+#### 1. 启动后端
+```bash
+# 初始化数据库
+mysql -u root -p < sql/init.sql
+
+# 修改配置
+vim backend/src/main/resources/application.yml
+
+# 启动后端
+cd backend
+mvn spring-boot:run
+```
+
+#### 2. 启动前端
+```bash
+cd front-admin
+npm install
+npm run dev
+```
+
+访问 http://localhost:3000
+
+### 方式二：Docker部署
+
+```bash
+# 克隆项目
+git clone https://github.com/Cokosk/Home_Serve.git
+cd Home_Serve
+
+# 一键部署
+chmod +x deploy.sh
+./deploy.sh
+```
+
+访问 http://your-server-ip
+
+## 前端页面预览
+
+| 页面 | 说明 |
+|------|------|
+| 首页 | 数据统计卡片、热门服务表格、最新订单列表 |
+| 订单管理 | 搜索筛选、订单表格、分页、详情弹窗 |
+| 服务管理 | 分类Tab、服务项目Tab、状态管理 |
+| 用户管理 | 用户列表、角色标签、状态开关 |
+| 服务者管理 | 服务者列表、评分显示、审核操作 |
 
 ## API接口文档
 
@@ -178,70 +224,12 @@ key: rate:limit:{ip}:{api}
 8. 释放分布式锁
 ```
 
-## 快速启动
+## 开发进度
 
-### 1. 环境要求
-- JDK 22
-- Maven 3.9+
-- MySQL 8.0+
-- Redis 5.0+
-
-### 2. 初始化数据库
-```bash
-mysql -u root -p < sql/init.sql
-```
-
-### 3. 配置修改
-修改 `backend/src/main/resources/application.yml` 中的数据库和Redis配置
-
-### 4. 本地运行
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-### 5. Docker部署
-```bash
-# 方式一：一键部署
-chmod +x deploy.sh
-./deploy.sh
-
-# 方式二：Docker Compose
-docker-compose up -d
-```
-
-### 6. 访问服务
-- 后端API: http://localhost:8080
-- Nginx: http://localhost
-
-## Docker部署架构
-
-```
-┌─────────────────────────────────────────┐
-│              Nginx (80/443)             │
-└────────────────┬────────────────────────┘
-                 │
-    ┌────────────┼────────────┐
-    ▼            ▼            ▼
-┌───────┐   ┌───────┐   ┌───────┐
-│  Vue  │   │ 小程序  │   │ 小程序  │
-│  后台  │   │ 用户端  │   │服务者端 │
-└───┬───┘   └───┬───┘   └───┬───┘
-    │           │           │
-    └───────────┼───────────┘
-                ▼
-      ┌─────────────────┐
-      │  Spring Boot    │
-      │    (Java 22)    │
-      └────────┬────────┘
-               │
-    ┌──────────┼──────────┐
-    ▼          ▼          ▼
- ┌─────┐   ┌─────┐   ┌─────┐
- │MySQL│   │Redis│   │  ... │
- │ 8.0 │   │ 7.x │   └─────┘
- └─────┘   └─────┘
-```
+- [x] 后端核心功能开发
+- [x] 管理后台前端开发
+- [ ] 本地测试
+- [ ] 阿里云部署
 
 ## 性能目标
 
@@ -250,21 +238,6 @@ docker-compose up -d
 | 抢单接口响应时间 | < 500ms (100并发) |
 | 缓存命中率 | > 90% |
 | 数据库QPS降低 | > 50% |
-
-## 开发阶段
-
-- [x] 第一阶段：基础框架搭建
-- [x] 第二阶段：Redis缓存、分布式锁、限流
-- [ ] 第三阶段：前端界面完善
-- [ ] 第四阶段：压力测试、优化
-
-## 后续规划
-
-1. 微信小程序前端开发
-2. 管理后台Vue开发
-3. 真实支付集成
-4. 消息推送集成
-5. 压力测试与优化
 
 ## 许可证
 
