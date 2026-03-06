@@ -242,3 +242,66 @@ chmod +x deploy.sh
 ## 许可证
 
 MIT
+## 部署说明
+
+### 阿里云部署步骤
+
+```bash
+# 1. 上传项目到服务器
+scp -r home-serve root@your-server-ip:/opt/
+
+# 2. 登录服务器
+ssh root@your-server-ip
+
+# 3. 安装依赖（如未安装）
+apt update && apt install -y docker.io docker-compose maven
+
+# 4. 配置 Docker 镜像源（解决拉取失败问题）
+cat > /etc/docker/daemon.json << 'DAEMON'
+{
+  "registry-mirrors": [
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://registry.cn-hangzhou.aliyuncs.com"
+  ]
+}
+DAEMON
+systemctl restart docker
+
+# 5. 启动服务
+cd /opt/home-serve
+docker-compose up -d
+
+# 6. 验证服务
+curl http://localhost:8080/health
+```
+
+### 防火墙配置
+
+```bash
+# 开放必要端口
+ufw allow 80      # Nginx
+ufw allow 8080    # 后端 API
+ufw allow 3306    # MySQL（可选，仅内网访问建议关闭）
+ufw allow 6379    # Redis（可选，仅内网访问建议关闭）
+```
+
+### 阿里云安全组
+
+在阿里云控制台 - 安全组添加入站规则：
+- TCP 80（HTTP）
+- TCP 8080（API）
+- TCP 3306（MySQL，建议仅内网）
+- TCP 6379（Redis，建议仅内网）
+
+### 日志查看
+
+```bash
+# 查看服务状态
+docker-compose ps
+
+# 查看后端日志
+docker-compose logs backend
+
+# 实时日志
+docker-compose logs -f backend
+```
