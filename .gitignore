@@ -1,0 +1,18 @@
+# OpenClaw 配置文件 - 仅保留在本地
+AGENTS.md
+BOOTSTRAP.md
+HEARTBEAT.md
+IDENTITY.md
+MEMORY.md
+SOUL.md
+TOOLS.md
+USER.md
+
+# 敏感目录
+.openclaw/
+memory/
+scripts/
+skills/local-secrets/
+
+# 敏感信息 skill
+skills/local-secrets/
