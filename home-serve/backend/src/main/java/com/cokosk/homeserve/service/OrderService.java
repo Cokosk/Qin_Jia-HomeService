@@ -13,7 +13,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -131,7 +134,8 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
      * 从Redis抢单池获取可抢订单
      */
     public java.util.List<Object> getGrabPoolOrders() {
-        return redisTemplate.opsForZSet().range("order:grab:pool", 0, -1);
+        Set<String> orders = redisTemplate.opsForZSet().range("order:grab:pool", 0, -1);
+        return orders != null ? new ArrayList<>(orders) : new ArrayList<>();
     }
     
     /**
