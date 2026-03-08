@@ -60,46 +60,47 @@
 
 ```
 qin-jia/
-├── backend/                 # 后端服务
-│   ├── src/main/java/       # Java 源码
-│   ├── src/test/java/       # 测试用例
-│   └── pom.xml              # Maven 配置
-├── front-admin/             # 管理后台前端
-│   ├── src/                 # Vue3 源码
-│   └── package.json         # npm 配置
-├── front-user/              # 用户端前端（规划）
-├── front-worker/            # 服务者端前端（规划）
-├── sql/                     # 数据库脚本
-├── nginx/                   # Nginx 配置
-└── docker-compose.yml       # Docker 编排
+├── home-serve/              # 项目主目录
+│   ├── backend/             # 后端服务
+│   │   ├── src/main/java/   # Java 源码
+│   │   ├── src/test/java/   # 测试用例
+│   │   └── pom.xml          # Maven 配置
+│   ├── front-admin/         # 管理后台前端
+│   │   ├── src/             # Vue3 源码
+│   │   └── package.json     # npm 配置
+│   ├── sql/                 # 数据库脚本
+│   ├── nginx/               # Nginx 配置
+│   └── docker-compose.yml   # Docker 编排
+├── skills/                  # OpenClaw Skills
+└── README.md
 ```
 
 ## 快速开始
 
 ### 环境要求
 
-- JDK 17+
+- JDK 21+
 - Maven 3.9+
 - Node.js 18+
 - MySQL 8.0+
 - Redis 7.0+
+- Docker & Docker Compose
 
 ### 本地开发
 
 ```bash
 # 1. 克隆项目
-git clone https://github.com/Cokosk/Home_Serve.git
-cd Home_Serve
+git clone https://github.com/Cokosk/Qin_Jia-HomeService.git
+cd Qin_Jia-HomeService/home-serve
 
 # 2. 初始化数据库
 mysql -u root -p < sql/init.sql
 
 # 3. 启动后端
-cd backend
 mvn spring-boot:run
 
 # 4. 启动前端
-cd ../front-admin
+cd front-admin
 npm install
 npm run dev
 ```
@@ -107,9 +108,8 @@ npm run dev
 ### Docker 部署
 
 ```bash
-# 一键启动
-chmod +x deploy.sh
-./deploy.sh
+cd home-serve
+docker compose up -d
 ```
 
 ## API 文档
@@ -163,9 +163,17 @@ AI 助手（麻辣小龙虾）协助完成：
 - [x] 管理后台前端
 - [x] Redis 缓存与分布式锁
 - [x] 单元测试用例
+- [x] 阿里云部署
 - [ ] 用户端前端
 - [ ] 服务者端前端
 - [ ] 性能优化与压测
+
+## 部署状态
+
+| 环境 | 状态 | 地址 |
+|------|------|------|
+| 阿里云 | ✅ 已部署 | http://101.200.180.182 |
+| GitHub | ✅ 已同步 | https://github.com/Cokosk/Qin_Jia-HomeService |
 
 ## 许可证
 
