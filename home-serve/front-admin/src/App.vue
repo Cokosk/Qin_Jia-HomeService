@@ -2,7 +2,7 @@
   <el-container class="app-container">
     <!-- 侧边栏 -->
     <el-aside width="200px">
-      <div class="logo">勤家家政服务平台</div>
+      <div class="logo">勤家服务平台</div>
       <el-menu
         :default-active="activeMenu"
         class="el-menu-vertical"
