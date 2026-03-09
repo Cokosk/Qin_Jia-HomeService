@@ -5,7 +5,7 @@
     <van-form @submit="handleSubmit">
       <!-- 服务信息 -->
       <van-cell-group inset title="服务信息">
-        <van-cell :title="service?.name" :value="'¥' + service?.price" />
+        <van-cell :title="service?.name" :value="'🦞 ¥' + service?.price" />
       </van-cell-group>
 
       <!-- 预约时间 -->
@@ -17,11 +17,13 @@
           label="选择时间"
           placeholder="请选择预约时间"
           @click="showDatePicker = true"
+          :rules="[{ required: true, message: '请选择预约时间' }]"
         />
         <van-popup v-model:show="showDatePicker" position="bottom">
           <van-date-picker
             v-model="selectedDate"
             title="选择日期"
+            :min-date="minDate"
             @confirm="onDateConfirm"
             @cancel="showDatePicker = false"
           />
@@ -53,7 +55,7 @@
 
       <div class="submit-btn">
         <van-button round block type="primary" native-type="submit">
-          提交订单
+          🦞 提交订单
         </van-button>
       </div>
     </van-form>
@@ -61,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { serviceApi } from '../api/service'
 import { orderApi } from '../api/order'
@@ -72,7 +74,17 @@ const router = useRouter()
 
 const service = ref(null)
 const showDatePicker = ref(false)
-const selectedDate = ref(['2026', '03', '09'])
+
+// 获取当前日期
+const today = new Date()
+const selectedDate = ref([
+  today.getFullYear().toString(),
+  (today.getMonth() + 1).toString().padStart(2, '0'),
+  today.getDate().toString().padStart(2, '0')
+])
+
+// 最小日期为今天
+const minDate = computed(() => new Date())
 
 const form = ref({
   appointmentTime: '',
@@ -81,9 +93,13 @@ const form = ref({
 })
 
 const loadService = async () => {
-  const res = await serviceApi.getDetail(route.params.serviceId)
-  if (res.code === 200) {
-    service.value = res.data
+  try {
+    const res = await serviceApi.getDetail(route.params.serviceId)
+    if (res.code === 200) {
+      service.value = res.data
+    }
+  } catch (e) {
+    console.error('加载服务失败:', e)
   }
 }
 
@@ -93,6 +109,15 @@ const onDateConfirm = ({ selectedValues }) => {
 }
 
 const handleSubmit = async () => {
+  if (!form.value.appointmentTime) {
+    showToast('请选择预约时间')
+    return
+  }
+  if (!form.value.address) {
+    showToast('请输入地址')
+    return
+  }
+  
   try {
     const res = await orderApi.create({
       serviceId: route.params.serviceId,
@@ -120,7 +145,7 @@ onMounted(() => {
 
 <style scoped>
 .create-order {
-  background: #f5f5f5;
+  background: #f8f8f8;
   min-height: 100vh;
   padding-bottom: 80px;
 }
