@@ -15,7 +15,7 @@
           :key="category.id"
           @click="goToServices(category.id)"
         >
-          <div class="category-icon">{{ category.icon }}</div>
+          <div class="category-icon">{{ getCategoryIcon(category.icon) }}</div>
           <div class="category-name">{{ category.name }}</div>
         </div>
       </div>
@@ -63,6 +63,20 @@ const activeTab = ref(0)
 const categories = ref([])
 const hotServices = ref([])
 
+// 图标映射
+const iconMap = {
+  cleaning: '🧹',
+  appliance: '🔧',
+  nanny: '👶',
+  repair: '🛠️',
+  default: '📋'
+}
+
+// 获取分类图标
+const getCategoryIcon = (icon) => {
+  return iconMap[icon] || iconMap.default
+}
+
 // 加载分类
 const loadCategories = async () => {
   const res = await serviceApi.getCategory()
@@ -98,6 +112,7 @@ onMounted(() => {
 <style scoped>
 .home {
   padding-bottom: 60px;
+  background: #f5f5f5;
 }
 
 .search-bar {
@@ -110,35 +125,55 @@ onMounted(() => {
   font-weight: bold;
   padding: 15px;
   background: #fff;
+  color: #333;
+}
+
+.category-section {
+  background: #fff;
+  margin-bottom: 10px;
 }
 
 .category-list {
   display: flex;
   overflow-x: auto;
-  padding: 10px;
+  padding: 10px 5px;
   background: #fff;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-list::-webkit-scrollbar {
+  display: none;
 }
 
 .category-item {
   flex-shrink: 0;
-  width: 80px;
+  width: 70px;
   text-align: center;
-  padding: 10px;
+  padding: 10px 5px;
+  cursor: pointer;
 }
 
 .category-icon {
-  font-size: 30px;
-  margin-bottom: 5px;
+  font-size: 28px;
+  margin-bottom: 6px;
+  line-height: 1;
 }
 
 .category-name {
   font-size: 12px;
   color: #333;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hot-section {
+  background: #f5f5f5;
 }
 
 .service-list {
   padding: 10px;
-  background: #f5f5f5;
 }
 
 .service-card {
@@ -147,11 +182,13 @@ onMounted(() => {
   border-radius: 8px;
   margin-bottom: 10px;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .service-image {
   width: 100px;
   height: 100px;
+  flex-shrink: 0;
 }
 
 .service-image img {
@@ -162,17 +199,23 @@ onMounted(() => {
 
 .service-info {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .service-name {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .service-price {
-  font-size: 14px;
+  font-size: 16px;
   color: #ff6600;
+  font-weight: bold;
 }
 </style>
