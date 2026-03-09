@@ -13,32 +13,34 @@
       />
     </van-tabs>
 
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading-container">
+      <van-loading size="24px">加载中...</van-loading>
+    </div>
+
     <!-- 服务列表 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <van-list
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="loadServices"
-      >
-        <div class="service-item" v-for="service in services" :key="service.id" @click="goToDetail(service.id)">
-          <div class="service-card">
-            <div class="service-icon">{{ getServiceIcon(service.categoryId) }}</div>
-            <div class="service-info">
-              <div class="service-name">{{ service.name }}</div>
-              <div class="service-desc">{{ service.description }}</div>
-              <div class="service-price">
-                <span class="price-label">🦞</span>
-                <span class="price-value">¥{{ service.price }}</span>
-                <span class="price-unit">/次</span>
-              </div>
+    <div v-else class="service-container">
+      <div class="service-item" v-for="service in services" :key="service.id" @click="goToDetail(service.id)">
+        <div class="service-card">
+          <div class="service-icon">{{ getServiceIcon(service.categoryId) }}</div>
+          <div class="service-info">
+            <div class="service-name">{{ service.name }}</div>
+            <div class="service-desc">{{ service.description }}</div>
+            <div class="service-price">
+              <span class="price-label">🦞</span>
+              <span class="price-value">¥{{ service.price }}</span>
+              <span class="price-unit">/次</span>
             </div>
           </div>
         </div>
-        
-        <van-empty v-if="!loading && services.length === 0" description="暂无服务" />
-      </van-list>
-    </van-pull-refresh>
+      </div>
+      
+      <van-empty v-if="services.length === 0" description="暂无服务" />
+      
+      <div v-if="services.length > 0" class="list-end">
+        <span>— 已加载全部 —</span>
+      </div>
+    </div>
 
     <!-- 底部导航 -->
     <van-tabbar v-model="activeTab" route>
@@ -63,8 +65,6 @@ const activeCategory = ref(0)
 const categories = ref([])
 const services = ref([])
 const loading = ref(false)
-const refreshing = ref(false)
-const finished = ref(false)
 
 // 分类图标映射
 const categoryIconMap = {
@@ -93,8 +93,6 @@ const loadCategories = async () => {
 
 // 加载服务列表
 const loadServices = async () => {
-  if (loading.value) return
-  
   loading.value = true
   try {
     const params = {}
@@ -104,7 +102,6 @@ const loadServices = async () => {
     
     const res = await serviceApi.getList(params)
     if (res.code === 200) {
-      // API 返回的是数组，不是分页对象
       const data = Array.isArray(res.data) ? res.data : []
       
       // 根据分类筛选
@@ -113,28 +110,17 @@ const loadServices = async () => {
       } else {
         services.value = data
       }
-      
-      finished.value = true
     }
   } catch (e) {
     console.error('加载服务列表失败:', e)
-    finished.value = true
+    services.value = []
   } finally {
     loading.value = false
   }
 }
 
-// 下拉刷新
-const onRefresh = async () => {
-  finished.value = false
-  await loadServices()
-  refreshing.value = false
-}
-
 // 分类切换
 const onCategoryChange = () => {
-  services.value = []
-  finished.value = false
   loadServices()
 }
 
@@ -156,6 +142,17 @@ onMounted(async () => {
 .service-list {
   padding-bottom: 60px;
   background: #f8f8f8;
+  min-height: 100vh;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.service-container {
+  padding: 8px 0;
 }
 
 .service-item {
@@ -220,5 +217,12 @@ onMounted(async () => {
 .price-unit {
   font-size: 12px;
   color: #999;
+}
+
+.list-end {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 12px;
 }
 </style>
