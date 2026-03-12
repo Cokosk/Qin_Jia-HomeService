@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 const routes = [
   {
@@ -48,22 +49,47 @@ const routes = [
     name: 'Login',
     component: () => import('../views/Login.vue'),
     meta: { title: '登录' }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue'),
+    meta: { title: '页面不存在' }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory('/user/'),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  }
 })
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  // 设置页面标题
   document.title = to.meta.title || '勤家家政'
   
   const token = localStorage.getItem('token')
+  
+  // 需要登录但未登录
   if (to.meta.requiresAuth && !token) {
-    next('/login')
-  } else {
+    // 保存原目标路径，登录后跳回
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+  } 
+  // 已登录访问登录页
+  else if (to.path === '/login' && token) {
+    next({ path: '/' })
+  } 
+  else {
     next()
   }
 })
