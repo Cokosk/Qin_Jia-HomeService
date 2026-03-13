@@ -16,3 +16,17 @@ app.use(ElementPlus)
 app.use(Vant)
 
 app.mount('#app')
+
+// 初始化 Lucide Icons
+if (window.lucide) {
+  window.lucide.createIcons()
+}
+
+// 路由切换后重新初始化图标
+router.afterEach(() => {
+  setTimeout(() => {
+    if (window.lucide) {
+      window.lucide.createIcons()
+    }
+  }, 100)
+})

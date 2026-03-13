@@ -3,17 +3,11 @@
 </template>
 
 <script setup>
+// 用户端 - Phosphor Icons
+// 引入方式: <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: #f5f5f5;
-}
+/* 引入 Phosphor Icons */
+@import url('https://unpkg.com/@phosphor-icons/web');
 </style>

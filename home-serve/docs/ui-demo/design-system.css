@@ -1,0 +1,330 @@
+/* ===========================================
+   勤家 · 自然化设计系统
+   Natural Design System for QinJia
+   =========================================== */
+
+:root {
+  /* === 色彩系统 - 从"家"出发 === */
+  
+  /* 主色 - 温暖金（像阳光照在木质家具上） */
+  --color-primary: #B8860B;
+  --color-primary-light: #D4A84B;
+  --color-primary-dark: #8B6914;
+  --color-primary-soft: rgba(184, 134, 11, 0.1);
+  
+  /* 辅色 - 深棕（木质感、踏实） */
+  --color-secondary: #8B4513;
+  --color-secondary-light: #A0522D;
+  --color-secondary-dark: #5D2E0D;
+  
+  /* 背景 - 米白（像家的墙壁，温暖不刺眼） */
+  --color-bg-base: #FDF8F3;
+  --color-bg-warm: #FBF5EE;
+  --color-bg-card: #FFFEF9;
+  --color-bg-elevated: #FFFFFF;
+  
+  /* 点缀 - 橄榄绿（植物、生机） */
+  --color-accent-green: #4A7C59;
+  --color-accent-green-light: #6B9B7A;
+  
+  /* 强调 - 陶土红（手工感、温暖） */
+  --color-accent-terracotta: #C75B39;
+  --color-accent-terracotta-light: #D97B5A;
+  
+  /* 功能色 */
+  --color-success: #5D8A66;
+  --color-warning: #C9A227;
+  --color-error: #C44536;
+  --color-info: #5B8FA8;
+  
+  /* 文字色 */
+  --color-text-primary: #3D2B1F;
+  --color-text-secondary: #6B5344;
+  --color-text-muted: #8B7355;
+  --color-text-light: #A89880;
+  
+  /* 边框色 */
+  --color-border: rgba(139, 69, 19, 0.08);
+  --color-border-strong: rgba(139, 69, 19, 0.15);
+  
+  /* === 圆角系统 - 不完美才自然 === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  /* 有机圆角 - 不规则 */
+  --radius-organic-1: 24px 4px 20px 8px;
+  --radius-organic-2: 8px 20px 4px 16px;
+  --radius-organic-3: 16px 8px 24px 4px;
+  
+  /* === 阴影系统 - 柔和真实 === */
+  /* 使用棕色而非黑色，更温暖 */
+  --shadow-soft: 
+    0 1px 2px rgba(139, 69, 19, 0.04),
+    0 2px 4px rgba(139, 69, 19, 0.02);
+  --shadow-card: 
+    0 1px 3px rgba(139, 69, 19, 0.05),
+    0 4px 8px rgba(139, 69, 19, 0.02);
+  --shadow-elevated: 
+    0 4px 6px rgba(139, 69, 19, 0.04),
+    0 8px 16px rgba(139, 69, 19, 0.03);
+  --shadow-inset: inset 0 2px 4px rgba(139, 69, 19, 0.06);
+  
+  /* === 间距系统 === */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  /* === 字体系统 - 更有人味 === */
+  --font-family-display: "Noto Serif SC", "Source Han Serif SC", serif;
+  --font-family-body: "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  --font-family-mono: "JetBrains Mono", "Fira Code", monospace;
+  
+  /* 字重 - 更轻盈 */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  
+  /* 字号 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  
+  /* 行高 */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* 字间距 - 稍微松一点 */
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.05em;
+  --letter-spacing-wider: 0.1em;
+  
+  /* === 动效系统 - 自然的节奏 === */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
+  
+  /* 缓动函数 - 有呼吸感 */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* === 背景纹理 === */
+  --bg-texture-paper: 
+    radial-gradient(circle at 20% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(74, 124, 89, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(199, 91, 57, 0.01) 0%, transparent 70%);
+}
+
+/* === 基础样式 === */
+
+/* 页面背景 - 有纹理 */
+.page-bg {
+  background: var(--bg-texture-paper), var(--color-bg-base);
+  min-height: 100vh;
+}
+
+/* 卡片 - 像明信片 */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-organic-1);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg);
+  transition: all var(--duration-normal) var(--ease-in-out);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-2px);
+}
+
+/* 按钮 - 有分量感 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-in-out);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFF;
+  border-color: rgba(139, 69, 19, 0.2);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 2px 4px rgba(139, 69, 19, 0.15);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 8px rgba(139, 69, 19, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-inset);
+}
+
+.btn-secondary {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg-warm);
+  border-color: var(--color-primary);
+}
+
+/* 输入框 */
+.input {
+  width: 100%;
+  padding: var(--space-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.input::placeholder {
+  color: var(--color-text-light);
+}
+
+/* 标题 */
+.heading-1 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.heading-2 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.heading-3 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* 正文 */
+.text-body {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-light);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-small {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.tag-success {
+  background: rgba(93, 138, 102, 0.1);
+  color: var(--color-success);
+}
+
+.tag-warning {
+  background: rgba(201, 162, 39, 0.1);
+  color: var(--color-warning);
+}
+
+.tag-error {
+  background: rgba(196, 69, 54, 0.1);
+  color: var(--color-error);
+}
+
+/* 分割线 */
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-border-strong) 20%,
+    var(--color-border-strong) 80%,
+    transparent
+  );
+  margin: var(--space-lg) 0;
+}
+
+/* 价格显示 */
+.price {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-terracotta);
+}
+
+.price-symbol {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.price-unit {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-text-muted);
+  margin-left: var(--space-xs);
+}

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勤家 · 自然化UI设计Demo</title>
+  <link rel="stylesheet" href="design-system.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-family-body);
+      background: var(--bg-texture-paper), var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+    }
+    
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-2xl);
+    }
+    
+    .demo-section {
+      margin-bottom: var(--space-2xl);
+    }
+    
+    .demo-title {
+      font-family: var(--font-family-display);
+      font-size: var(--font-size-3xl);
+      color: var(--color-primary-dark);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-md);
+      border-bottom: 2px solid var(--color-primary-soft);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-lg);
+    }
+    
+    /* Lucide图标样式 */
+    .icon {
+      width: 48px;
+      height: 48px;
+      stroke: var(--color-primary);
+      stroke-width: 1.5;
+    }
+    
+    .icon-sm {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2;
+    }
+    
+    .icon-lg {
+      width: 64px;
+      height: 64px;
+      stroke-width: 1.25;
+    }
+    
+    .icon-terracotta {
+      stroke: var(--color-accent-terracotta);
+    }
+    
+    .icon-green {
+      stroke: var(--color-accent-green);
+    }
+    
+    .icon-muted {
+      stroke: var(--color-text-muted);
+    }
+    
+    .icon-secondary {
+      stroke: var(--color-secondary);
+    }
+    
+    /* 服务卡片 */
+    .service-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: 8px 24px 12px 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: all var(--duration-normal) var(--ease-in-out);
+    }
+    
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-elevated);
+    }
+    
+    .service-card-image {
+      height: 160px;
+      background: linear-gradient(135deg, var(--color-primary-soft) 0%, rgba(74, 124, 89, 0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .service-card-content {
+      padding: var(--space-md);
+    }
+    
+    .service-card-title {
+      font-family: var(--font-family-display);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .service-card-desc {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-md);
+      line-height: 1.6;
+    }
+    
+    .service-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .service-card-price {
+      font-family: var(--font-family-display);
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-accent-terracotta);
+    }
+    
+    .service-card-sales {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-light);
+    }
+    
+    /* 订单卡片 */
+    .order-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+    
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .order-card-id {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+    
+    .order-card-body {
+      display: flex;
+      gap: var(--space-md);
+    }
+    
+    .order-card-image {
+      width: 80px;
+      height: 80px;
+      background: var(--color-primary-soft);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .order-card-info {
+      flex: 1;
+    }
+    
+    .order-card-service {
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--space-xs);
+    }
+    
+    .order-card-worker {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-xs);
+    }
+    
+    .order-card-time {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    
+    /* 搜索框 */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      gap: var(--space-sm);
+    }
+    
+    .search-box-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+    
+    .search-box-input::placeholder {
+      color: var(--color-text-light);
+    }
+    
+    /* 颜色展示 */
+    .color-swatch {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    
+    .color-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+    }
+    
+    .color-info {
+      font-size: var(--font-size-sm);
+    }
+    
+    .color-name {
+      font-weight: var(--font-weight-medium);
+    }
+    
+    .color-value {
+      color: var(--color-text-muted);
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-xs);
+    }
+    
+    /* 图标展示区 */
+    .icon-grid {
+      display: flex;
+      gap: var(--space-xl);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .icon-item {
+      text-align: center;
+    }
+    
+    .icon-item p {
+      margin-top: var(--space-sm);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    
+    <!-- 标题区 -->
+    <div class="demo-section">
+      <h1 class="heading-1" style="margin-bottom: var(--space-md);">勤家 · 自然化UI设计Demo</h1>
+      <p class="text-body" style="max-width: 600px;">
+        从"家"出发的设计语言，温暖而不刺眼，自然而不刻意。
+        使用Lucide图标库，轻盈自然，远离AI设计的机械感。
+      </p>
+    </div>
+    
+    <!-- 色彩系统 -->
+    <div class="demo-section">
+      <h2 class="demo-title">色彩系统</h2>
+      <div class="demo-grid">
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md);">主色</h3>
+          <div class="color-swatch">
+            <div class="color-box" style="background: #B8860B;"></div>
+            <div class="color-info">
+              <div class="color-name">温暖金</div>
+              <div class="color-value">#B8860B</div>
+            </div>
+          </div>
+          <p class="text-small">像阳光照在木质家具上，传递专业与温暖</p>
+        </div>
+        
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md);">辅色</h3>
+          <div class="color-swatch">
+            <div class="color-box" style="background: #8B4513;"></div>
+            <div class="color-info">
+              <div class="color-name">深棕</div>
+              <div class="color-value">#8B4513</div>
+            </div>
+          </div>
+          <p class="text-small">木质感与踏实，传递可靠与稳重</p>
+        </div>
+        
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md);">点缀色</h3>
+          <div class="color-swatch">
+            <div class="color-box" style="background: #4A7C59;"></div>
+            <div class="color-info">
+              <div class="color-name">橄榄绿</div>
+              <div class="color-value">#4A7C59</div>
+            </div>
+          </div>
+          <p class="text-small">植物与生机，传递自然与活力</p>
+        </div>
+        
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md);">强调色</h3>
+          <div class="color-swatch">
+            <div class="color-box" style="background: #C75B39;"></div>
+            <div class="color-info">
+              <div class="color-name">陶土红</div>
+              <div class="color-value">#C75B39</div>
+            </div>
+          </div>
+          <p class="text-small">手工感与温暖，传递用心与服务</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 按钮系统 -->
+    <div class="demo-section">
+      <h2 class="demo-title">按钮系统</h2>
+      <div style="display: flex; gap: var(--space-md); flex-wrap: wrap; align-items: center;">
+        <button class="btn btn-primary">
+          <i data-lucide="calendar-plus" style="width: 18px; height: 18px; margin-right: 8px;"></i>
+          立即预约
+        </button>
+        <button class="btn btn-secondary">
+          <i data-lucide="info" style="width: 18px; height: 18px; margin-right: 8px;"></i>
+          了解更多
+        </button>
+        <button class="btn btn-primary" style="padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm);">小按钮</button>
+        <button class="btn btn-primary" style="padding: var(--space-md) var(--space-xl); font-size: var(--font-size-lg);">
+          <i data-lucide="phone" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+          联系客服
+        </button>
+      </div>
+    </div>
+    
+    <!-- 表单组件 -->
+    <div class="demo-section">
+      <h2 class="demo-title">表单组件</h2>
+      <div class="demo-grid">
+        <div>
+          <label style="display: block; margin-bottom: var(--space-sm); font-weight: var(--font-weight-medium);">搜索服务</label>
+          <div class="search-box">
+            <i data-lucide="search" class="icon-sm icon-muted"></i>
+            <input class="search-box-input" type="text" placeholder="搜索保洁、维修、搬家...">
+          </div>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: var(--space-sm); font-weight: var(--font-weight-medium);">服务地址</label>
+          <input class="input" type="text" placeholder="请输入您的详细地址">
+        </div>
+      </div>
+    </div>
+    
+    <!-- 服务卡片 -->
+    <div class="demo-section">
+      <h2 class="demo-title">服务卡片</h2>
+      <div class="demo-grid">
+        <div class="service-card">
+          <div class="service-card-image">
+            <i data-lucide="sparkles" class="icon-lg icon"></i>
+          </div>
+          <div class="service-card-content">
+            <h3 class="service-card-title">家庭保洁</h3>
+            <p class="service-card-desc">专业保洁阿姨上门服务，让您的家焕然一新</p>
+            <div class="service-card-footer">
+              <span class="service-card-price">¥80<span style="font-size: 14px; color: var(--color-text-muted);">/次</span></span>
+              <span class="service-card-sales">已服务 2,345 单</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-card-image" style="background: linear-gradient(135deg, rgba(74, 124, 89, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);">
+            <i data-lucide="wrench" class="icon-lg icon-green"></i>
+          </div>
+          <div class="service-card-content">
+            <h3 class="service-card-title">家电维修</h3>
+            <p class="service-card-desc">专业技师上门维修，各类家电问题轻松解决</p>
+            <div class="service-card-footer">
+              <span class="service-card-price">¥60<span style="font-size: 14px; color: var(--color-text-muted);">起</span></span>
+              <span class="service-card-sales">已服务 1,892 单</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-card-image" style="background: linear-gradient(135deg, rgba(199, 91, 57, 0.1) 0%, rgba(74, 124, 89, 0.05) 100%);">
+            <i data-lucide="package" class="icon-lg icon-terracotta"></i>
+          </div>
+          <div class="service-card-content">
+            <h3 class="service-card-title">搬家服务</h3>
+            <p class="service-card-desc">专业搬家团队，安全快捷省心省力</p>
+            <div class="service-card-footer">
+              <span class="service-card-price">¥200<span style="font-size: 14px; color: var(--color-text-muted);">起</span></span>
+              <span class="service-card-sales">已服务 987 单</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 更多服务 -->
+    <div class="demo-section">
+      <h2 class="demo-title">更多服务</h2>
+      <div class="demo-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+        <div class="card" style="text-align: center; padding: var(--space-lg);">
+          <i data-lucide="wind" class="icon" style="margin-bottom: var(--space-sm);"></i>
+          <p style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">空调清洗</p>
+        </div>
+        <div class="card" style="text-align: center; padding: var(--space-lg);">
+          <i data-lucide="refrigerator" class="icon icon-green" style="margin-bottom: var(--space-sm);"></i>
+          <p style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">冰箱维修</p>
+        </div>
+        <div class="card" style="text-align: center; padding: var(--space-lg);">
+          <i data-lucide="flame" class="icon icon-terracotta" style="margin-bottom: var(--space-sm);"></i>
+          <p style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">燃气灶维修</p>
+        </div>
+        <div class="card" style="text-align: center; padding: var(--space-lg);">
+          <i data-lucide="droplets" class="icon" style="margin-bottom: var(--space-sm);"></i>
+          <p style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">水管维修</p>
+        </div>
+        <div class="card" style="text-align: center; padding: var(--space-lg);">
+          <i data-lucide="lamp" class="icon icon-secondary" style="margin-bottom: var(--space-sm);"></i>
+          <p style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">灯具安装</p>
+        </div>
+        <div class="card" style="text-align: center; padding: var(--space-lg);">
+          <i data-lucide="lock" class="icon icon-green" style="margin-bottom: var(--space-sm);"></i>
+          <p style="font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);">开锁换锁</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 订单卡片 -->
+    <div class="demo-section">
+      <h2 class="demo-title">订单卡片</h2>
+      <div class="order-card">
+        <div class="order-card-header">
+          <span class="order-card-id">订单号：QJ202603130001</span>
+          <span class="tag tag-success">
+            <i data-lucide="check-circle" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+            服务完成
+          </span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-card-image">
+            <i data-lucide="sparkles" class="icon"></i>
+          </div>
+          <div class="order-card-info">
+            <div class="order-card-service">家庭保洁 · 深度清洁</div>
+            <div class="order-card-worker">
+              <i data-lucide="user" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+              服务人员：王阿姨
+            </div>
+            <div class="order-card-time">
+              <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+              服务时间：2026-03-13 14:00
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div class="price"><span class="price-symbol">¥</span>120</div>
+            <button class="btn btn-secondary" style="margin-top: var(--space-sm); padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm);">
+              <i data-lucide="repeat" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+              再次预约
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="order-card">
+        <div class="order-card-header">
+          <span class="order-card-id">订单号：QJ202603130002</span>
+          <span class="tag tag-warning">
+            <i data-lucide="clock" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+            待服务
+          </span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-card-image" style="background: rgba(74, 124, 89, 0.1);">
+            <i data-lucide="wind" class="icon icon-green"></i>
+          </div>
+          <div class="order-card-info">
+            <div class="order-card-service">空调清洗</div>
+            <div class="order-card-worker">
+              <i data-lucide="user" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+              服务人员：待分配
+            </div>
+            <div class="order-card-time">
+              <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+              预约时间：2026-03-14 10:00
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div class="price"><span class="price-symbol">¥</span>150</div>
+            <button class="btn btn-secondary" style="margin-top: var(--space-sm); padding: var(--space-xs) var(--space-md); font-size: var(--font-size-sm);">
+              <i data-lucide="x" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+              取消订单
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 标签系统 -->
+    <div class="demo-section">
+      <h2 class="demo-title">标签系统</h2>
+      <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+        <span class="tag">默认标签</span>
+        <span class="tag tag-success">
+          <i data-lucide="check" style="width: 12px; height: 12px; margin-right: 4px;"></i>
+          服务完成
+        </span>
+        <span class="tag tag-warning">
+          <i data-lucide="clock" style="width: 12px; height: 12px; margin-right: 4px;"></i>
+          待服务
+        </span>
+        <span class="tag tag-error">
+          <i data-lucide="x-circle" style="width: 12px; height: 12px; margin-right: 4px;"></i>
+          已取消
+        </span>
+      </div>
+    </div>
+    
+    <!-- 字体系统 -->
+    <div class="demo-section">
+      <h2 class="demo-title">字体系统</h2>
+      <div class="card">
+        <h1 class="heading-1" style="margin-bottom: var(--space-md);">标题一 · 宋体韵味</h1>
+        <h2 class="heading-2" style="margin-bottom: var(--space-md);">标题二 · 书卷气息</h2>
+        <h3 class="heading-3" style="margin-bottom: var(--space-md);">标题三 · 温和有力</h3>
+        <p class="text-body" style="margin-bottom: var(--space-md);">
+          正文采用细黑体，行高1.75，字间距稍微松一些，阅读起来更加舒适自然。不像AI设计那样紧凑密集，而是给人呼吸的空间。
+        </p>
+        <p class="text-small">
+          小字说明，用于辅助信息、时间、注释等内容，颜色较浅，不抢夺视觉焦点。
+        </p>
+      </div>
+    </div>
+    
+    <!-- 图标系统 -->
+    <div class="demo-section">
+      <h2 class="demo-title">图标系统（Lucide Icons）</h2>
+      <div class="card">
+        <p class="text-body" style="margin-bottom: var(--space-lg);">
+          使用Lucide图标库，线条轻盈自然，配合设计系统的色彩，保持一致的视觉语言。
+          Lucide是Feather Icons的改良版，去除了AI设计的机械感，更加人性化。
+        </p>
+        <div class="icon-grid">
+          <div class="icon-item">
+            <i data-lucide="search" class="icon"></i>
+            <p class="text-small">搜索</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="home" class="icon"></i>
+            <p class="text-small">首页</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="user" class="icon"></i>
+            <p class="text-small">用户</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="file-text" class="icon"></i>
+            <p class="text-small">订单</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="settings" class="icon"></i>
+            <p class="text-small">设置</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="phone" class="icon"></i>
+            <p class="text-small">电话</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="map-pin" class="icon"></i>
+            <p class="text-small">地址</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="calendar" class="icon"></i>
+            <p class="text-small">日程</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="credit-card" class="icon"></i>
+            <p class="text-small">支付</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="message-circle" class="icon"></i>
+            <p class="text-small">消息</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="star" class="icon"></i>
+            <p class="text-small">收藏</p>
+          </div>
+          <div class="icon-item">
+            <i data-lucide="heart" class="icon icon-terracotta"></i>
+            <p class="text-small">喜欢</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 设计对比 -->
+    <div class="demo-section">
+      <h2 class="demo-title">设计对比</h2>
+      <div class="demo-grid">
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md); color: var(--color-error);">AI设计风格</h3>
+          <div style="background: #F8FAFC; padding: var(--space-md); border-radius: 12px; margin-bottom: var(--space-md);">
+            <div style="background: #1E40AF; color: white; padding: var(--space-sm) var(--space-md); border-radius: 8px; display: inline-block; margin-bottom: var(--space-sm);">标准蓝色按钮</div>
+            <p style="font-size: 14px; color: #64748B; font-family: system-ui;">标准无衬线字体，统一圆角，冷色调背景</p>
+          </div>
+          <p class="text-small">问题：冷冰冰、无个性、千篇一律</p>
+        </div>
+        
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md); color: var(--color-success);">自然设计风格</h3>
+          <div style="background: #FDF8F3; padding: var(--space-md); border-radius: 8px 20px 12px 16px; margin-bottom: var(--space-md);">
+            <button class="btn btn-primary" style="margin-bottom: var(--space-sm);">
+              <i data-lucide="sparkles" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+              温暖金按钮
+            </button>
+            <p class="text-small" style="font-family: 'Noto Sans SC';">衬线标题+细黑正文，不规则圆角，温暖背景</p>
+          </div>
+          <p class="text-small">优势：有温度、有个性、像家的感觉</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <script>
+    // 初始化Lucide图标
+    lucide.createIcons();
+  </script>
+</body>
+</html>

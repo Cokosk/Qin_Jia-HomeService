@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勤家用户端 · 设计Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      /* 温暖金 - 用户端主色 */
+      --color-primary: #B8860B;
+      --color-primary-light: #D4A84B;
+      --color-primary-dark: #8B6914;
+      --color-primary-soft: rgba(184, 134, 11, 0.1);
+      
+      /* 辅色 */
+      --color-secondary: #8B4513;
+      --color-accent-green: #4A7C59;
+      --color-accent-terracotta: #C75B39;
+      
+      /* 背景 */
+      --color-bg-base: #FDF8F3;
+      --color-bg-card: #FFFEF9;
+      --color-bg-elevated: #FFFFFF;
+      
+      /* 文字 */
+      --color-text-primary: #3D2B1F;
+      --color-text-secondary: #6B5344;
+      --color-text-muted: #8B7355;
+      --color-text-light: #A89880;
+      
+      /* 边框 */
+      --color-border: rgba(139, 69, 19, 0.08);
+      --color-border-strong: rgba(139, 69, 19, 0.15);
+      
+      /* 功能色 */
+      --color-success: #5D8A66;
+      --color-warning: #C9A227;
+      --color-error: #C44536;
+      
+      /* 间距 */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      
+      /* 圆角 */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      
+      /* 字体 */
+      --font-display: "Noto Serif SC", serif;
+      --font-body: "Noto Sans SC", sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding-bottom: 80px;
+    }
+    
+    /* 顶部导航 */
+    .header {
+      background: var(--color-bg-elevated);
+      padding: var(--space-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+    
+    .logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+    
+    .location {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: 14px;
+      color: var(--color-text-secondary);
+    }
+    
+    /* 搜索框 */
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--color-bg-base);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      gap: var(--space-sm);
+    }
+    
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      color: var(--color-text-primary);
+    }
+    
+    .search-box input::placeholder {
+      color: var(--color-text-light);
+    }
+    
+    /* 主内容区 */
+    .main {
+      padding: var(--space-md);
+    }
+    
+    /* 分类导航 */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      cursor: pointer;
+    }
+    
+    .category-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--color-primary-soft);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    
+    .category-item:hover .category-icon {
+      transform: scale(1.05);
+      background: rgba(184, 134, 11, 0.15);
+    }
+    
+    .category-icon i {
+      font-size: 28px;
+      color: var(--color-primary);
+    }
+    
+    .category-name {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+    
+    /* 区块标题 */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-title span {
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-family: var(--font-body);
+    }
+    
+    /* 服务卡片 */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .service-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    
+    .service-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139, 69, 19, 0.1);
+    }
+    
+    .service-image {
+      height: 100px;
+      background: linear-gradient(135deg, var(--color-primary-soft) 0%, rgba(74, 124, 89, 0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .service-image i {
+      font-size: 40px;
+      color: var(--color-primary);
+    }
+    
+    .service-content {
+      padding: var(--space-sm) var(--space-md);
+    }
+    
+    .service-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+    }
+    
+    .service-desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .service-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .service-price {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-accent-terracotta);
+    }
+    
+    .service-price small {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+    
+    .service-sales {
+      font-size: 10px;
+      color: var(--color-text-light);
+    }
+    
+    /* 订单卡片 */
+    .order-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .order-id {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    
+    .order-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .order-status.success {
+      background: rgba(93, 138, 102, 0.1);
+      color: var(--color-success);
+    }
+    
+    .order-status.pending {
+      background: rgba(201, 162, 39, 0.1);
+      color: var(--color-warning);
+    }
+    
+    .order-body {
+      display: flex;
+      gap: var(--space-md);
+    }
+    
+    .order-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--color-primary-soft);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .order-icon i {
+      font-size: 28px;
+      color: var(--color-primary);
+    }
+    
+    .order-info {
+      flex: 1;
+    }
+    
+    .order-service {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .order-worker {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: 2px;
+    }
+    
+    .order-time {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .order-price {
+      text-align: right;
+    }
+    
+    .order-price .price {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-accent-terracotta);
+    }
+    
+    /* 底部导航 */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--color-bg-elevated);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--space-sm) 0;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: var(--space-xs) var(--space-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 10px;
+    }
+    
+    .nav-item i {
+      font-size: 24px;
+    }
+    
+    .nav-item.active {
+      color: var(--color-primary);
+    }
+    
+    /* 按钮 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-md);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: var(--color-bg-elevated);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-strong);
+    }
+    
+    /* 页面标识 */
+    .page-badge {
+      position: fixed;
+      top: var(--space-md);
+      right: var(--space-md);
+      background: var(--color-primary);
+      color: white;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面标识 -->
+  <div class="page-badge">
+    <i class="ph ph-sparkle" style="vertical-align: middle;"></i>
+    用户端 · Phosphor Icons
+  </div>
+  
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="header-top">
+      <div class="logo">勤家</div>
+      <div class="location">
+        <i class="ph ph-map-pin"></i>
+        <span>杭州市西湖区</span>
+        <i class="ph ph-caret-down"></i>
+      </div>
+    </div>
+    <div class="search-box">
+      <i class="ph ph-magnifying-glass" style="color: var(--color-text-light);"></i>
+      <input type="text" placeholder="搜索保洁、维修、搬家...">
+    </div>
+  </header>
+  
+  <!-- 主内容 -->
+  <main class="main">
+    <!-- 分类导航 -->
+    <div class="categories">
+      <div class="category-item">
+        <div class="category-icon"><i class="ph ph-sparkle"></i></div>
+        <span class="category-name">保洁</span>
+      </div>
+      <div class="category-item">
+        <div class="category-icon" style="background: rgba(74, 124, 89, 0.1);"><i class="ph ph-wrench" style="color: var(--color-accent-green);"></i></div>
+        <span class="category-name">维修</span>
+      </div>
+      <div class="category-item">
+        <div class="category-icon" style="background: rgba(199, 91, 57, 0.1);"><i class="ph ph-package" style="color: var(--color-accent-terracotta);"></i></div>
+        <span class="category-name">搬家</span>
+      </div>
+      <div class="category-item">
+        <div class="category-icon" style="background: rgba(139, 69, 19, 0.1);"><i class="ph ph-bathtub" style="color: var(--color-secondary);"></i></div>
+        <span class="category-name">清洗</span>
+      </div>
+      <div class="category-item">
+        <div class="category-icon"><i class="ph ph-dots-three"></i></div>
+        <span class="category-name">更多</span>
+      </div>
+    </div>
+    
+    <!-- 热门服务 -->
+    <div class="section-title">
+      热门服务
+      <span>查看全部 <i class="ph ph-caret-right"></i></span>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="service-image"><i class="ph ph-sparkle"></i></div>
+        <div class="service-content">
+          <div class="service-title">家庭保洁</div>
+          <div class="service-desc">专业阿姨上门清洁</div>
+          <div class="service-footer">
+            <div class="service-price">¥80<small>/次</small></div>
+            <div class="service-sales">已服务2.3k单</div>
+          </div>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-image" style="background: linear-gradient(135deg, rgba(74, 124, 89, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);"><i class="ph ph-wrench" style="color: var(--color-accent-green);"></i></div>
+        <div class="service-content">
+          <div class="service-title">家电维修</div>
+          <div class="service-desc">专业技师上门</div>
+          <div class="service-footer">
+            <div class="service-price">¥60<small>起</small></div>
+            <div class="service-sales">已服务1.8k单</div>
+          </div>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-image" style="background: linear-gradient(135deg, rgba(199, 91, 57, 0.1) 0%, rgba(74, 124, 89, 0.05) 100%);"><i class="ph ph-package" style="color: var(--color-accent-terracotta);"></i></div>
+        <div class="service-content">
+          <div class="service-title">搬家服务</div>
+          <div class="service-desc">安全快捷省心</div>
+          <div class="service-footer">
+            <div class="service-price">¥200<small>起</small></div>
+            <div class="service-sales">已服务987单</div>
+          </div>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-image"><i class="ph ph-wind"></i></div>
+        <div class="service-content">
+          <div class="service-title">空调清洗</div>
+          <div class="service-desc">深度清洗消毒</div>
+          <div class="service-footer">
+            <div class="service-price">¥150<small>/台</small></div>
+            <div class="service-sales">已服务1.2k单</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 我的订单 -->
+    <div class="section-title">
+      我的订单
+      <span>全部订单 <i class="ph ph-caret-right"></i></span>
+    </div>
+    
+    <div class="order-card">
+      <div class="order-header">
+        <span class="order-id">订单号：QJ202603130001</span>
+        <span class="order-status success">
+          <i class="ph ph-check-circle"></i> 服务完成
+        </span>
+      </div>
+      <div class="order-body">
+        <div class="order-icon"><i class="ph ph-sparkle"></i></div>
+        <div class="order-info">
+          <div class="order-service">家庭保洁 · 深度清洁</div>
+          <div class="order-worker"><i class="ph ph-user"></i> 服务人员：王阿姨</div>
+          <div class="order-time"><i class="ph ph-clock"></i> 2026-03-13 14:00</div>
+        </div>
+        <div class="order-price">
+          <div class="price">¥120</div>
+          <button class="btn btn-secondary" style="margin-top: 8px; font-size: 12px; padding: 4px 12px;">
+            <i class="ph ph-arrow-repeat"></i> 再次预约
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="order-card">
+      <div class="order-header">
+        <span class="order-id">订单号：QJ202603130002</span>
+        <span class="order-status pending">
+          <i class="ph ph-clock"></i> 待服务
+        </span>
+      </div>
+      <div class="order-body">
+        <div class="order-icon" style="background: rgba(74, 124, 89, 0.1);"><i class="ph ph-wind" style="color: var(--color-accent-green);"></i></div>
+        <div class="order-info">
+          <div class="order-service">空调清洗</div>
+          <div class="order-worker"><i class="ph ph-user"></i> 服务人员：待分配</div>
+          <div class="order-time"><i class="ph ph-calendar"></i> 预约：2026-03-14 10:00</div>
+        </div>
+        <div class="order-price">
+          <div class="price">¥150</div>
+          <button class="btn btn-secondary" style="margin-top: 8px; font-size: 12px; padding: 4px 12px;">
+            <i class="ph ph-x"></i> 取消订单
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <i class="ph ph-fill ph-house"></i>
+      <span>首页</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="ph ph-list-bullets"></i>
+      <span>订单</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="ph ph-chat-circle-dots"></i>
+      <span>消息</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="ph ph-user"></i>
+      <span>我的</span>
+    </a>
+  </nav>
+</body>
+</html>

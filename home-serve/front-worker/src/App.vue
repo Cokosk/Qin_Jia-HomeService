@@ -3,17 +3,9 @@
 </template>
 
 <script setup>
+// 工人端 - Lucide Icons
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: #f5f5f5;
-}
+/* Lucide Icons 在页面中动态加载 */
 </style>

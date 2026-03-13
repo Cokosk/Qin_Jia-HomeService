@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勤家管理后台 · 设计Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    :root {
+      /* 深色主题 */
+      --color-bg-base: #0F172A;
+      --color-bg-card: #1E293B;
+      --color-bg-elevated: #334155;
+      
+      /* 主色 */
+      --color-primary: #3B82F6;
+      --color-primary-light: #60A5FA;
+      --color-primary-soft: rgba(59, 130, 246, 0.15);
+      
+      /* 辅色 */
+      --color-success: #22C55E;
+      --color-warning: #F59E0B;
+      --color-error: #EF4444;
+      --color-info: #06B6D4;
+      
+      /* 文字 */
+      --color-text-primary: #F1F5F9;
+      --color-text-secondary: #94A3B8;
+      --color-text-muted: #64748B;
+      
+      /* 边框 */
+      --color-border: #334155;
+      
+      /* 间距 */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      
+      /* 圆角 */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      
+      /* 字体 */
+      --font-body: "Inter", "Noto Sans SC", sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* 侧边栏 */
+    .sidebar {
+      width: 260px;
+      background: var(--color-bg-card);
+      padding: var(--space-lg);
+      border-right: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: var(--space-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--color-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .nav-section {
+      margin-bottom: var(--space-lg);
+    }
+    
+    .nav-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      margin-bottom: 2px;
+      transition: all 0.15s ease;
+    }
+    
+    .nav-item:hover {
+      background: var(--color-bg-elevated);
+      color: var(--color-text-primary);
+    }
+    
+    .nav-item.active {
+      background: var(--color-primary-soft);
+      color: var(--color-primary-light);
+    }
+    
+    .nav-item i {
+      font-size: 20px;
+    }
+    
+    /* 主内容区 */
+    .main {
+      flex: 1;
+      padding: var(--space-lg);
+      overflow-y: auto;
+    }
+    
+    /* 顶部 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+    
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-sm) var(--space-md);
+      gap: var(--space-sm);
+    }
+    
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      outline: none;
+      width: 200px;
+    }
+    
+    .search-box input::placeholder {
+      color: var(--color-text-muted);
+    }
+    
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    /* 统计卡片 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .stat-card {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      border: 1px solid var(--color-border);
+    }
+    
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+    
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .stat-icon.blue { background: rgba(59, 130, 246, 0.15); color: var(--color-primary-light); }
+    .stat-icon.green { background: rgba(34, 197, 94, 0.15); color: var(--color-success); }
+    .stat-icon.yellow { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); }
+    .stat-icon.cyan { background: rgba(6, 182, 212, 0.15); color: var(--color-info); }
+    
+    .stat-trend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+    }
+    
+    .stat-trend.up { color: var(--color-success); }
+    .stat-trend.down { color: var(--color-error); }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+    }
+    
+    /* 内容网格 */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-lg);
+    }
+    
+    /* 卡片 */
+    .card {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+    }
+    
+    .card-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .card-body {
+      padding: var(--space-lg);
+    }
+    
+    /* 表格 */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .table th,
+    .table td {
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .table th {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .table td {
+      font-size: 14px;
+    }
+    
+    .table tr:hover {
+      background: var(--color-bg-elevated);
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-badge.success { background: rgba(34, 197, 94, 0.15); color: var(--color-success); }
+    .status-badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); }
+    .status-badge.error { background: rgba(239, 68, 68, 0.15); color: var(--color-error); }
+    
+    /* 活动列表 */
+    .activity-item {
+      display: flex;
+      gap: var(--space-md);
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .activity-icon.order { background: rgba(59, 130, 246, 0.15); color: var(--color-primary-light); }
+    .activity-icon.user { background: rgba(34, 197, 94, 0.15); color: var(--color-success); }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-title {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    
+    .activity-time {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    
+    /* 页面标识 */
+    .page-badge {
+      position: fixed;
+      top: var(--space-md);
+      right: var(--space-md);
+      background: var(--color-bg-card);
+      color: var(--color-primary-light);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 200;
+      border: 1px solid var(--color-border);
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面标识 -->
+  <div class="page-badge">
+    管理后台 · Tabler Icons
+  </div>
+  
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-home"></i></div>
+      勤家管理后台
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">概览</div>
+      <a href="#" class="nav-item active"><i class="ti ti-dashboard"></i> 数据看板</a>
+      <a href="#" class="nav-item"><i class="ti ti-chart-line"></i> 数据分析</a>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">业务管理</div>
+      <a href="#" class="nav-item"><i class="ti ti-file-text"></i> 订单管理</a>
+      <a href="#" class="nav-item"><i class="ti ti-users"></i> 用户管理</a>
+      <a href="#" class="nav-item"><i class="ti ti-user-check"></i> 工人管理</a>
+      <a href="#" class="nav-item"><i class="ti ti-package"></i> 服务管理</a>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">财务</div>
+      <a href="#" class="nav-item"><i class="ti ti-receipt"></i> 财务报表</a>
+      <a href="#" class="nav-item"><i class="ti ti-wallet"></i> 结算管理</a>
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-section-title">系统</div>
+      <a href="#" class="nav-item"><i class="ti ti-settings"></i> 系统设置</a>
+      <a href="#" class="nav-item"><i class="ti ti-history"></i> 操作日志</a>
+    </div>
+  </aside>
+  
+  <!-- 主内容 -->
+  <main class="main">
+    <div class="header">
+      <h1 class="page-title">数据看板</h1>
+      <div class="header-actions">
+        <div class="search-box">
+          <i class="ti ti-search" style="color: var(--color-text-muted);"></i>
+          <input type="text" placeholder="搜索订单、用户...">
+        </div>
+        <i class="ti ti-bell" style="font-size: 24px; color: var(--color-text-secondary); cursor: pointer;"></i>
+        <div class="avatar">管</div>
+      </div>
+    </div>
+    
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon blue"><i class="ti ti-file-text"></i></div>
+          <div class="stat-trend up"><i class="ti ti-trending-up"></i> 12.5%</div>
+        </div>
+        <div class="stat-value">1,284</div>
+        <div class="stat-label">今日订单</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon green"><i class="ti ti-currency-yen"></i></div>
+          <div class="stat-trend up"><i class="ti ti-trending-up"></i> 8.2%</div>
+        </div>
+        <div class="stat-value">¥89.5K</div>
+        <div class="stat-label">今日收入</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon yellow"><i class="ti ti-users"></i></div>
+          <div class="stat-trend up"><i class="ti ti-trending-up"></i> 5.3%</div>
+        </div>
+        <div class="stat-value">3,421</div>
+        <div class="stat-label">活跃用户</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon cyan"><i class="ti ti-user-check"></i></div>
+          <div class="stat-trend down"><i class="ti ti-trending-down"></i> 2.1%</div>
+        </div>
+        <div class="stat-value">156</div>
+        <div class="stat-label">在线工人</div>
+      </div>
+    </div>
+    
+    <!-- 内容网格 -->
+    <div class="content-grid">
+      <!-- 订单表格 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">最近订单</span>
+          <span style="color: var(--color-primary); font-size: 14px; cursor: pointer;">查看全部</span>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>订单号</th>
+                <th>服务</th>
+                <th>客户</th>
+                <th>工人</th>
+                <th>金额</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#QJ240313001</td>
+                <td><i class="ti ti-sparkles" style="color: var(--color-warning);"></i> 家庭保洁</td>
+                <td>张女士</td>
+                <td>王阿姨</td>
+                <td>¥120</td>
+                <td><span class="status-badge success"><i class="ti ti-check"></i> 已完成</span></td>
+              </tr>
+              <tr>
+                <td>#QJ240313002</td>
+                <td><i class="ti ti-wind" style="color: var(--color-info);"></i> 空调清洗</td>
+                <td>李先生</td>
+                <td>待分配</td>
+                <td>¥150</td>
+                <td><span class="status-badge pending"><i class="ti ti-clock"></i> 待派单</span></td>
+              </tr>
+              <tr>
+                <td>#QJ240313003</td>
+                <td><i class="ti ti-wrench" style="color: var(--color-success);"></i> 家电维修</td>
+                <td>王先生</td>
+                <td>刘师傅</td>
+                <td>¥80</td>
+                <td><span class="status-badge pending"><i class="ti ti-clock"></i> 服务中</span></td>
+              </tr>
+              <tr>
+                <td>#QJ240313004</td>
+                <td><i class="ti ti-package" style="color: var(--color-error);"></i> 搬家服务</td>
+                <td>赵女士</td>
+                <td>张师傅</td>
+                <td>¥350</td>
+                <td><span class="status-badge error"><i class="ti ti-x"></i> 已取消</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 最近活动 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">最近活动</span>
+        </div>
+        <div class="card-body">
+          <div class="activity-item">
+            <div class="activity-icon order"><i class="ti ti-file-text"></i></div>
+            <div class="activity-content">
+              <div class="activity-title">新订单 #QJ240313005</div>
+              <div class="activity-time">2分钟前</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon user"><i class="ti ti-user-plus"></i></div>
+            <div class="activity-content">
+              <div class="activity-title">新用户注册 - 陈先生</div>
+              <div class="activity-time">15分钟前</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon order"><i class="ti ti-check"></i></div>
+            <div class="activity-content">
+              <div class="activity-title">订单 #QJ240313001 已完成</div>
+              <div class="activity-time">30分钟前</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon user"><i class="ti ti-user-check"></i></div>
+            <div class="activity-content">
+              <div class="activity-title">新工人入驻 - 孙师傅</div>
+              <div class="activity-time">1小时前</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

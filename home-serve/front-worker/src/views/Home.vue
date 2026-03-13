@@ -3,7 +3,10 @@
     <!-- 顶部导航 -->
     <van-nav-bar title="勤家家政 - 服务者端">
       <template #right>
-        <van-icon name="bell" :badge="noticeCount || ''" @click="goToNotice" />
+        <div class="nav-icon-btn" @click="goToNotice">
+          <i data-lucide="bell" class="nav-icon"></i>
+          <span class="badge" v-if="noticeCount">{{ noticeCount }}</span>
+        </div>
       </template>
     </van-nav-bar>
 
@@ -12,26 +15,32 @@
       <van-row gutter="12">
         <van-col span="8">
           <div class="stat-card income">
-            <div class="stat-icon">💰</div>
+            <div class="stat-icon-wrap">
+              <i data-lucide="wallet" class="stat-icon"></i>
+            </div>
             <div class="stat-value">
               <span class="currency">¥</span>{{ stats.todayIncome }}
             </div>
             <div class="stat-label">今日收入</div>
             <div class="stat-trend up" v-if="stats.incomeTrend > 0">
-              <van-icon name="arrow-up" /> {{ stats.incomeTrend }}%
+              <i data-lucide="trending-up" style="width:12px;height:12px;"></i> {{ stats.incomeTrend }}%
             </div>
           </div>
         </van-col>
         <van-col span="8">
           <div class="stat-card pending">
-            <div class="stat-icon">⏳</div>
+            <div class="stat-icon-wrap">
+              <i data-lucide="clock" class="stat-icon"></i>
+            </div>
             <div class="stat-value">{{ stats.pendingOrders }}</div>
             <div class="stat-label">待处理</div>
           </div>
         </van-col>
         <van-col span="8">
           <div class="stat-card completed">
-            <div class="stat-icon">✅</div>
+            <div class="stat-icon-wrap">
+              <i data-lucide="check-circle" class="stat-icon"></i>
+            </div>
             <div class="stat-value">{{ stats.completedOrders }}</div>
             <div class="stat-label">已完成</div>
           </div>
@@ -44,7 +53,7 @@
       <div class="grab-notice" v-if="grabCount > 0" @click="goToGrab">
         <div class="notice-content">
           <div class="notice-icon-wrapper">
-            <span class="notice-icon">🔔</span>
+            <i data-lucide="bell-ring" class="notice-icon"></i>
             <span class="pulse-ring"></span>
           </div>
           <div class="notice-text">
@@ -52,7 +61,7 @@
             <span class="sub-text">当前 {{ grabCount }} 个订单待抢单</span>
           </div>
         </div>
-        <van-icon name="arrow" class="notice-arrow" />
+        <i data-lucide="chevron-right" class="notice-arrow"></i>
       </div>
     </transition>
 
@@ -64,26 +73,26 @@
       <div class="action-grid">
         <div class="action-item" @click="goToGrab">
           <div class="action-icon grab">
-            <van-icon name="shopping-cart-o" />
+            <i data-lucide="shopping-bag"></i>
           </div>
           <span class="action-text">抢单池</span>
           <span class="action-badge" v-if="grabCount">{{ grabCount }}</span>
         </div>
         <div class="action-item" @click="goToOrders">
           <div class="action-icon order">
-            <van-icon name="orders-o" />
+            <i data-lucide="list"></i>
           </div>
           <span class="action-text">我的订单</span>
         </div>
         <div class="action-item" @click="goToIncome">
           <div class="action-icon income">
-            <van-icon name="balance-o" />
+            <i data-lucide="bar-chart-2"></i>
           </div>
           <span class="action-text">收入统计</span>
         </div>
         <div class="action-item" @click="goToAttendance">
           <div class="action-icon attendance">
-            <van-icon name="clock-o" />
+            <i data-lucide="calendar-clock"></i>
           </div>
           <span class="action-text">考勤打卡</span>
         </div>
@@ -121,11 +130,11 @@
             </div>
             <div class="task-info">
               <div class="info-item">
-                <van-icon name="location-o" class="info-icon" />
+                <i data-lucide="map-pin" class="info-icon"></i>
                 <span>{{ order.address }}</span>
               </div>
               <div class="info-item">
-                <van-icon name="clock-o" class="info-icon" />
+                <i data-lucide="clock" class="info-icon"></i>
                 <span>{{ order.appointmentTime }}</span>
               </div>
             </div>
@@ -150,17 +159,30 @@
     </div>
 
     <!-- 底部导航 -->
-    <van-tabbar v-model="activeTab" route active-color="#667eea">
-      <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
-      <van-tabbar-item icon="shopping-cart-o" to="/grab" :badge="grabCount || ''">抢单</van-tabbar-item>
-      <van-tabbar-item icon="orders-o" to="/orders">订单</van-tabbar-item>
-      <van-tabbar-item icon="user-o" to="/user">我的</van-tabbar-item>
-    </van-tabbar>
+    <nav class="bottom-nav">
+      <a href="#/" class="nav-item active">
+        <i data-lucide="home"></i>
+        <span>首页</span>
+      </a>
+      <a href="#/grab" class="nav-item">
+        <i data-lucide="shopping-bag"></i>
+        <span>抢单</span>
+        <span class="nav-badge" v-if="grabCount">{{ grabCount }}</span>
+      </a>
+      <a href="#/orders" class="nav-item">
+        <i data-lucide="list"></i>
+        <span>订单</span>
+      </a>
+      <a href="#/user" class="nav-item">
+        <i data-lucide="user"></i>
+        <span>我的</span>
+      </a>
+    </nav>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { orderApi } from '../api/order'
 import { showToast } from 'vant'
@@ -190,6 +212,15 @@ const serviceIcons = {
 }
 
 const getServiceIcon = (serviceId) => serviceIcons[serviceId] || '📋'
+
+// 初始化图标
+const initIcons = () => {
+  nextTick(() => {
+    if (window.lucide) {
+      window.lucide.createIcons()
+    }
+  })
+}
 
 // 加载抢单池
 const loadGrabPool = async () => {
@@ -227,6 +258,7 @@ const onRefresh = async () => {
   await Promise.all([loadGrabPool(), loadStats(), loadTodayOrders()])
   refreshing.value = false
   showToast('刷新成功')
+  initIcons()
 }
 
 // 加载更多
@@ -282,25 +314,54 @@ onMounted(() => {
   loadGrabPool()
   loadStats()
   loadTodayOrders()
+  initIcons()
 })
 </script>
 
 <style scoped>
 .home {
-  padding-bottom: 60px;
-  background: #f5f5f5;
+  padding-bottom: 70px;
+  background: var(--color-bg-base);
   min-height: 100vh;
+}
+
+/* 顶部导航图标 */
+.nav-icon-btn {
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary);
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--color-error);
+  color: white;
+  font-size: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 统计卡片 */
 .stats-section {
   padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1D4ED8 100%);
 }
 
 .stat-card {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   padding: 14px 10px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -308,15 +369,27 @@ onMounted(() => {
   overflow: hidden;
 }
 
+.stat-icon-wrap {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 8px;
+  background: var(--color-primary-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .stat-icon {
-  font-size: 24px;
-  margin-bottom: 6px;
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
 }
 
 .stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .stat-value .currency {
@@ -326,7 +399,7 @@ onMounted(() => {
 
 .stat-label {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-muted);
   margin-top: 4px;
 }
 
@@ -343,20 +416,20 @@ onMounted(() => {
 }
 
 .stat-trend.up {
-  background: #E8FFE8;
-  color: #52C41A;
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--color-success);
 }
 
-.stat-card.income .stat-value { color: #FF6B35; }
-.stat-card.pending .stat-value { color: #FF9500; }
-.stat-card.completed .stat-value { color: #34C759; }
+.stat-card.income .stat-value { color: var(--color-error); }
+.stat-card.pending .stat-value { color: var(--color-warning); }
+.stat-card.completed .stat-value { color: var(--color-success); }
 
 /* 抢单提醒 */
 .grab-notice {
   margin: 12px;
   padding: 14px 16px;
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -381,7 +454,8 @@ onMounted(() => {
 }
 
 .notice-icon {
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .pulse-ring {
@@ -423,14 +497,15 @@ onMounted(() => {
 }
 
 .notice-arrow {
-  font-size: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 /* 快捷入口 */
 .quick-actions {
-  background: #fff;
+  background: var(--color-bg-card);
   margin: 0 12px;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 14px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
@@ -438,7 +513,7 @@ onMounted(() => {
 .section-title {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 14px;
 }
 
@@ -450,7 +525,7 @@ onMounted(() => {
 
 .task-count {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 .action-grid {
@@ -465,32 +540,36 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   position: relative;
+  cursor: pointer;
 }
 
 .action-icon {
   width: 50px;
   height: 50px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  color: #667eea;
   transition: transform 0.2s;
+}
+
+.action-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .action-item:active .action-icon {
   transform: scale(0.9);
 }
 
-.action-icon.grab { background: linear-gradient(135deg, #FFF0E8 0%, #FFE5D9 100%); color: #FF6B35; }
-.action-icon.order { background: linear-gradient(135deg, #E8F4FF 0%, #D6F4FF 100%); color: #1890FF; }
-.action-icon.income { background: linear-gradient(135deg, #E8FFE8 0%, #D6FFD6 100%); color: #52C41A; }
-.action-icon.attendance { background: linear-gradient(135deg, #F0F5FF 0%, #E6EDFF 100%); color: #722ED1; }
+.action-icon.grab { background: rgba(220, 38, 38, 0.1); color: var(--color-error); }
+.action-icon.order { background: var(--color-primary-soft); color: var(--color-primary); }
+.action-icon.income { background: rgba(22, 163, 74, 0.1); color: var(--color-success); }
+.action-icon.attendance { background: rgba(217, 119, 6, 0.1); color: var(--color-warning); }
 
 .action-text {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .action-badge {
@@ -500,7 +579,7 @@ onMounted(() => {
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
-  background: #FF4D4F;
+  background: var(--color-error);
   color: #fff;
   font-size: 10px;
   border-radius: 8px;
@@ -515,12 +594,13 @@ onMounted(() => {
 }
 
 .task-card {
-  background: #fff;
-  border-radius: 14px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
   padding: 14px;
   margin-bottom: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   transition: transform 0.2s;
+  cursor: pointer;
 }
 
 .task-card:active {
@@ -547,29 +627,29 @@ onMounted(() => {
 .task-type {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .task-status {
   font-size: 12px;
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   font-weight: 500;
 }
 
 .task-status.pending {
-  background: linear-gradient(135deg, #FFF0E8 0%, #FFE5D9 100%);
-  color: #FF6B35;
+  background: rgba(217, 119, 6, 0.1);
+  color: var(--color-warning);
 }
 
 .task-status.processing {
-  background: linear-gradient(135deg, #E8F4FF 0%, #D6F4FF 100%);
-  color: #1890FF;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .task-status.completed {
-  background: linear-gradient(135deg, #E8FFE8 0%, #D6FFD6 100%);
-  color: #52C41A;
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--color-success);
 }
 
 .task-info {
@@ -583,11 +663,13 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .info-icon {
-  color: #999;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
 }
 
 .task-footer {
@@ -596,13 +678,64 @@ onMounted(() => {
   align-items: center;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--color-border);
 }
 
 .task-price {
   font-size: 18px;
   font-weight: 700;
-  color: #FF6B35;
+  color: var(--color-error);
+}
+
+/* 底部导航 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-bg-card);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-around;
+  padding: var(--space-sm) 0;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-xs) var(--space-md);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 11px;
+  position: relative;
+}
+
+.nav-item svg {
+  width: 24px;
+  height: 24px;
+}
+
+.nav-item.active {
+  color: var(--color-primary);
+}
+
+.nav-badge {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--color-error);
+  color: white;
+  font-size: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 动画 */

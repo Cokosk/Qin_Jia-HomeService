@@ -1,4 +1,86 @@
-/* 重置样式 */
+/* ===========================================
+   勤家用户端 · 自然化设计系统
+   User App - Natural Design System
+   =========================================== */
+
+/* === 引入字体 === */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+
+/* === CSS 变量 === */
+:root {
+  /* 主色 - 温暖金（像阳光照在木质家具上） */
+  --color-primary: #B8860B;
+  --color-primary-light: #D4A84B;
+  --color-primary-dark: #8B6914;
+  --color-primary-soft: rgba(184, 134, 11, 0.1);
+  
+  /* 辅色 */
+  --color-secondary: #8B4513;
+  --color-accent-green: #4A7C59;
+  --color-accent-terracotta: #C75B39;
+  
+  /* 背景 */
+  --color-bg-base: #FDF8F3;
+  --color-bg-warm: #FBF5EE;
+  --color-bg-card: #FFFEF9;
+  --color-bg-elevated: #FFFFFF;
+  
+  /* 文字 */
+  --color-text-primary: #3D2B1F;
+  --color-text-secondary: #6B5344;
+  --color-text-muted: #8B7355;
+  --color-text-light: #A89880;
+  
+  /* 边框 */
+  --color-border: rgba(139, 69, 19, 0.08);
+  --color-border-strong: rgba(139, 69, 19, 0.15);
+  
+  /* 功能色 */
+  --color-success: #5D8A66;
+  --color-warning: #C9A227;
+  --color-error: #C44536;
+  --color-info: #5B8FA8;
+  
+  /* 间距 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  /* 阴影 */
+  --shadow-soft: 0 1px 2px rgba(139, 69, 19, 0.04), 0 2px 4px rgba(139, 69, 19, 0.02);
+  --shadow-card: 0 1px 3px rgba(139, 69, 19, 0.05), 0 4px 8px rgba(139, 69, 19, 0.02);
+  --shadow-elevated: 0 4px 6px rgba(139, 69, 19, 0.04), 0 8px 16px rgba(139, 69, 19, 0.03);
+  
+  /* 字体 */
+  --font-display: "Noto Serif SC", "Source Han Serif SC", serif;
+  --font-body: "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  
+  /* 字号 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  
+  /* 动效 */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* === 重置样式 === */
 * {
   margin: 0;
   padding: 0;
@@ -6,27 +88,37 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
-  color: #333;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
-  background: #f5f5f5;
+  background: var(--color-bg-base);
   min-height: 100vh;
   line-height: 1.5;
 }
 
 #app {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--color-bg-base);
 }
 
-/* PC 端适配 */
+/* === 页面背景纹理 === */
+.page-bg {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(74, 124, 89, 0.02) 0%, transparent 50%),
+    var(--color-bg-base);
+  min-height: 100vh;
+}
+
+/* === PC 端适配 === */
 @media (min-width: 768px) {
   body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    background: #e8e8e8;
+    background: #e8e0d8;
     padding: 20px 0;
   }
   
@@ -34,19 +126,29 @@ body {
     max-width: 500px;
     width: 100%;
     min-height: calc(100vh - 40px);
-    background: #fff;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
+    background: var(--color-bg-base);
+    box-shadow: 0 4px 20px rgba(139, 69, 19, 0.1);
+    border-radius: var(--radius-lg);
     overflow: hidden;
   }
 }
 
-/* 移动端底部导航适配 */
+/* === 移动端底部导航适配 === */
 .van-tabbar {
   position: fixed !important;
   bottom: 0;
   left: 0;
   right: 0;
+  background: var(--color-bg-elevated) !important;
+  border-top: 1px solid var(--color-border) !important;
+}
+
+.van-tabbar-item {
+  color: var(--color-text-muted) !important;
+}
+
+.van-tabbar-item--active {
+  color: var(--color-primary) !important;
 }
 
 @media (min-width: 768px) {
@@ -54,16 +156,18 @@ body {
     max-width: 500px;
     left: 50%;
     transform: translateX(-50%);
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   }
 }
 
-/* 页面底部留白（避免被导航遮挡） */
+/* === 页面底部留白 === */
 .home,
 .order-list,
 .grab-pool,
 .user-center,
-.service-list {
+.service-list,
+.messages,
+.settings {
   padding-bottom: 70px;
 }
 
@@ -72,7 +176,182 @@ body {
   .order-list,
   .grab-pool,
   .user-center,
-  .service-list {
+  .service-list,
+  .messages,
+  .settings {
     padding-bottom: 80px;
   }
+}
+
+/* === 标题样式 === */
+.heading-1 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-4xl);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.heading-2 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.heading-3 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+/* === 正文样式 === */
+.text-body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+}
+
+.text-small {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: 300;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* === 卡片样式 === */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg);
+  transition: all var(--duration-normal) var(--ease-in-out);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-elevated);
+  transform: translateY(-2px);
+}
+
+/* === 按钮样式 === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-in-out);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFF;
+  border-color: rgba(139, 69, 19, 0.2);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 2px 4px rgba(139, 69, 19, 0.15);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 8px rgba(139, 69, 19, 0.2);
+}
+
+.btn-secondary {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg-warm);
+  border-color: var(--color-primary);
+}
+
+/* === 价格显示 === */
+.price {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-accent-terracotta);
+}
+
+/* === 标签样式 === */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.tag-success {
+  background: rgba(93, 138, 102, 0.1);
+  color: var(--color-success);
+}
+
+.tag-warning {
+  background: rgba(201, 162, 39, 0.1);
+  color: var(--color-warning);
+}
+
+.tag-error {
+  background: rgba(196, 69, 54, 0.1);
+  color: var(--color-error);
+}
+
+/* === Vant 组件覆盖 === */
+.van-button--primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.van-button--default {
+  background: var(--color-bg-elevated) !important;
+  border-color: var(--color-border-strong) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.van-nav-bar {
+  background: var(--color-bg-elevated) !important;
+}
+
+.van-nav-bar__title {
+  font-family: var(--font-display) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.van-card {
+  background: var(--color-bg-card) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.van-cell {
+  background: var(--color-bg-elevated) !important;
+}
+
+.van-cell-group {
+  background: var(--color-bg-elevated) !important;
 }

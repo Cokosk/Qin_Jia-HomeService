@@ -1,187 +1,185 @@
 <template>
-  <div class="home">
-    <!-- 顶部搜索栏 -->
-    <div class="search-bar">
-      <van-search 
-        v-model="searchText" 
-        placeholder="搜索服务" 
-        shape="round"
-        @search="handleSearch"
-        @focus="goToSearch"
-      >
-        <template #left-icon>
-          <van-icon name="search" color="#FF6B35" />
-        </template>
-      </van-search>
-    </div>
-
-    <!-- 轮播图 -->
-    <div class="banner-section">
-      <van-swipe class="banner-swipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item v-for="banner in banners" :key="banner.id">
-          <div class="banner-item" :style="{ background: banner.bg }">
-            <div class="banner-content">
-              <div class="banner-title">{{ banner.title }}</div>
-              <div class="banner-desc">{{ banner.desc }}</div>
-              <div class="banner-tag" v-if="banner.tag">{{ banner.tag }}</div>
-            </div>
-            <div class="banner-decoration">
-              <div class="deco-circle"></div>
-              <div class="deco-circle small"></div>
-            </div>
-          </div>
-        </van-swipe-item>
-      </van-swipe>
-    </div>
-
-    <!-- 服务分类 -->
-    <div class="category-section">
-      <div class="section-header">
-        <span class="section-title">🦞 服务分类</span>
+  <div class="home page-bg">
+    <!-- 顶部导航 -->
+    <header class="header">
+      <div class="header-top">
+        <div class="logo">勤家</div>
+        <div class="location">
+          <i class="ph ph-map-pin"></i>
+          <span>杭州市西湖区</span>
+          <i class="ph ph-caret-down"></i>
+        </div>
       </div>
-      <!-- 分类骨架屏 -->
-      <div class="category-list" v-if="categoriesLoading">
-        <SkeletonLoader type="category" v-for="i in 5" :key="i" />
+      <div class="search-box">
+        <i class="ph ph-magnifying-glass"></i>
+        <input 
+          type="text" 
+          v-model="searchText" 
+          placeholder="搜索保洁、维修、搬家..."
+          @focus="goToSearch"
+          @keyup.enter="handleSearch"
+        >
       </div>
-      <div class="category-list" v-else>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main">
+      <!-- 分类导航 -->
+      <div class="categories">
         <div 
           class="category-item" 
-          v-for="category in categories" 
+          v-for="category in displayCategories" 
           :key="category.id"
           @click="goToServices(category.id)"
         >
-          <div class="category-icon">
-            {{ getCategoryEmoji(category.icon) }}
+          <div class="category-icon" :style="getCategoryStyle(category)">
+            <i :class="getCategoryIcon(category)"></i>
           </div>
-          <div class="category-name">{{ category.name }}</div>
+          <span class="category-name">{{ category.name }}</span>
         </div>
       </div>
-    </div>
 
-    <!-- 热门服务 -->
-    <div class="hot-section">
-      <div class="section-header">
-        <span class="section-title">🔥 热门服务</span>
+      <!-- 热门服务 -->
+      <div class="section-title">
+        <span>热门服务</span>
         <span class="more" @click="goToServices()">
-          查看全部
-          <van-icon name="arrow" />
+          查看全部 <i class="ph ph-caret-right"></i>
         </span>
       </div>
-      
-      <!-- 服务骨架屏 -->
-      <div class="service-list" v-if="servicesLoading">
-        <SkeletonLoader type="service-card" v-for="i in 3" :key="i" />
+
+      <!-- 骨架屏 -->
+      <div class="service-grid" v-if="servicesLoading">
+        <div class="skeleton-card" v-for="i in 4" :key="i">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-desc"></div>
+            <div class="skeleton-footer"></div>
+          </div>
+        </div>
       </div>
-      
-      <div v-else>
-        <van-pull-refresh v-model="refreshing" @refresh="onRefresh" success-text="刷新成功">
-          <van-list
-            v-model:loading="loading"
-            :finished="finished"
-            finished-text=""
-            @load="loadMore"
+
+      <!-- 服务列表 -->
+      <van-pull-refresh v-else v-model="refreshing" @refresh="onRefresh" success-text="刷新成功">
+        <div class="service-grid">
+          <div 
+            class="service-card" 
+            v-for="service in hotServices" 
+            :key="service.id"
+            @click="goToServiceDetail(service.id)"
           >
-            <div 
-              class="service-card" 
-              v-for="service in hotServices" 
-              :key="service.id"
-              @click="goToServiceDetail(service.id)"
-            >
-              <div class="service-image">
-                <div class="service-icon">{{ getServiceIcon(service) }}</div>
-                <div class="service-badge" v-if="service.badge">{{ service.badge }}</div>
-              </div>
-              <div class="service-info">
-                <div class="service-name">{{ service.name }}</div>
-                <div class="service-desc">{{ service.description || '专业服务，品质保障' }}</div>
-                <div class="service-tags" v-if="service.tags && service.tags.length">
-                  <span class="tag" v-for="tag in service.tags.slice(0, 2)" :key="tag">{{ tag }}</span>
+            <div class="service-image">
+              <i :class="getServiceIcon(service)"></i>
+            </div>
+            <div class="service-content">
+              <div class="service-title">{{ service.name }}</div>
+              <div class="service-desc">{{ service.description || '专业服务，品质保障' }}</div>
+              <div class="service-footer">
+                <div class="service-price">
+                  <span class="price-symbol">¥</span>{{ service.price }}<small>/次</small>
                 </div>
-                <div class="service-meta">
-                  <div class="service-price">
-                    <span class="price-symbol">¥</span>
-                    <span class="price-value">{{ service.price }}</span>
-                    <span class="price-unit">/次</span>
-                  </div>
-                  <div class="service-sales">
-                    <van-icon name="fire-o" color="#FF6B35" />
-                    已售{{ service.sales || 100 }}+
-                  </div>
-                </div>
+                <div class="service-sales">已服务{{ service.sales || 100 }}+单</div>
               </div>
             </div>
-            <EmptyState 
-              v-if="hotServices.length === 0 && !servicesLoading" 
-              type="service" 
-              title="暂无热门服务"
-              description="下拉刷新试试"
-            />
-          </van-list>
-        </van-pull-refresh>
-      </div>
-    </div>
+          </div>
+        </div>
+        
+        <EmptyState 
+          v-if="hotServices.length === 0 && !servicesLoading" 
+          type="service" 
+          title="暂无热门服务"
+          description="下拉刷新试试"
+        />
+      </van-pull-refresh>
+    </main>
 
     <!-- 底部导航 -->
-    <van-tabbar v-model="activeTab" active-color="#FF6B35" inactive-color="#999">
-      <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
-      <van-tabbar-item icon="apps-o" to="/services">服务</van-tabbar-item>
-      <van-tabbar-item icon="orders-o" to="/orders">订单</van-tabbar-item>
-      <van-tabbar-item icon="user-o" to="/user">我的</van-tabbar-item>
-    </van-tabbar>
+    <nav class="bottom-nav">
+      <a href="#/" class="nav-item active">
+        <i class="ph ph-fill ph-house"></i>
+        <span>首页</span>
+      </a>
+      <a href="#/services" class="nav-item">
+        <i class="ph ph-list-bullets"></i>
+        <span>服务</span>
+      </a>
+      <a href="#/orders" class="nav-item">
+        <i class="ph ph-clipboard-text"></i>
+        <span>订单</span>
+      </a>
+      <a href="#/user" class="nav-item">
+        <i class="ph ph-user"></i>
+        <span>我的</span>
+      </a>
+    </nav>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { serviceApi } from '../api/service'
 import { showToast } from 'vant'
-import SkeletonLoader from '../components/SkeletonLoader.vue'
 import EmptyState from '../components/EmptyState.vue'
 
 const router = useRouter()
 const searchText = ref('')
-const activeTab = ref(0)
 const categories = ref([])
 const hotServices = ref([])
-const loading = ref(false)
-const finished = ref(false)
 const refreshing = ref(false)
-const categoriesLoading = ref(true)
 const servicesLoading = ref(true)
-const page = ref(1)
 
-// 轮播图数据
-const banners = ref([
-  { id: 1, title: '新人专享', desc: '首单立减20元', tag: '限时', bg: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)' },
-  { id: 2, title: '品质保障', desc: '专业服务人员', tag: '认证', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-  { id: 3, title: '限时特惠', desc: '保洁服务8折起', tag: '优惠', bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
-  { id: 4, title: '春季大促', desc: '家电清洗5折', tag: '热门', bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }
-])
+// 显示的分类（最多5个）
+const displayCategories = computed(() => {
+  const defaults = [
+    { id: 'cleaning', name: '保洁', icon: 'sparkle' },
+    { id: 'repair', name: '维修', icon: 'wrench' },
+    { id: 'move', name: '搬家', icon: 'package' },
+    { id: 'wash', name: '清洗', icon: 'bathtub' }
+  ]
+  return categories.value.length > 0 ? categories.value.slice(0, 5) : [...defaults, { id: 'more', name: '更多', icon: 'dots-three' }]
+})
 
 // 分类图标映射
 const categoryIconMap = {
-  cleaning: { emoji: '🧹', label: '保洁' },
-  appliance: { emoji: '🔧', label: '家电' },
-  nanny: { emoji: '👶', label: '月嫂' },
-  repair: { emoji: '🛠️', label: '维修' },
-  move: { emoji: '🚚', label: '搬家' },
-  default: { emoji: '📋', label: '服务' }
+  cleaning: 'ph ph-sparkle',
+  appliance: 'ph ph-wind',
+  repair: 'ph ph-wrench',
+  move: 'ph ph-package',
+  wash: 'ph ph-bathtub',
+  nanny: 'ph ph-baby',
+  default: 'ph ph-list'
 }
 
-// 获取分类 emoji
-const getCategoryEmoji = (icon) => {
-  return categoryIconMap[icon]?.emoji || categoryIconMap.default.emoji
+// 分类样式映射
+const categoryStyleMap = {
+  cleaning: { bg: 'rgba(184, 134, 11, 0.1)', color: 'var(--color-primary)' },
+  repair: { bg: 'rgba(74, 124, 89, 0.1)', color: 'var(--color-accent-green)' },
+  move: { bg: 'rgba(199, 91, 57, 0.1)', color: 'var(--color-accent-terracotta)' },
+  wash: { bg: 'rgba(139, 69, 19, 0.1)', color: 'var(--color-secondary)' },
+  default: { bg: 'var(--color-primary-soft)', color: 'var(--color-primary)' }
 }
 
-// 获取服务图标
+const getCategoryIcon = (category) => {
+  return categoryIconMap[category.icon] || categoryIconMap.default
+}
+
+const getCategoryStyle = (category) => {
+  const style = categoryStyleMap[category.icon] || categoryStyleMap.default
+  return {
+    background: style.bg,
+    color: style.color
+  }
+}
+
+// 服务图标映射
 const getServiceIcon = (service) => {
-  return getCategoryEmoji(service.icon) || '🦞'
+  const iconClass = categoryIconMap[service.icon] || categoryIconMap.cleaning
+  return iconClass + ' service-icon'
 }
 
 // 加载分类
 const loadCategories = async () => {
-  categoriesLoading.value = true
   try {
     const res = await serviceApi.getCategory({ showLoading: false })
     if (res.code === 200) {
@@ -189,8 +187,6 @@ const loadCategories = async () => {
     }
   } catch (error) {
     console.error('加载分类失败:', error)
-  } finally {
-    categoriesLoading.value = false
   }
 }
 
@@ -207,15 +203,6 @@ const loadHotServices = async () => {
   } finally {
     servicesLoading.value = false
   }
-}
-
-// 加载更多
-const loadMore = async () => {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    finished.value = true
-  }, 500)
 }
 
 // 下拉刷新
@@ -254,306 +241,292 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.home {
-  padding-bottom: 60px;
-  background: #f5f5f5;
-  min-height: 100vh;
+/* 顶部导航 */
+.header {
+  background: var(--color-bg-elevated);
+  padding: var(--space-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.search-bar {
-  padding: 10px 12px;
-  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-}
-
-.search-bar :deep(.van-search__content) {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* 轮播图 */
-.banner-section {
-  padding: 0 12px 12px;
-  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-}
-
-.banner-swipe {
-  height: 140px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.banner-item {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.banner-content {
-  z-index: 2;
-}
-
-.banner-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.banner-desc {
-  font-size: 14px;
-  opacity: 0.95;
-  color: #fff;
-}
-
-.banner-tag {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
-  font-size: 12px;
-  color: #fff;
-  backdrop-filter: blur(4px);
-}
-
-.banner-decoration {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.deco-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  position: absolute;
-  right: 0;
-  top: -40px;
-}
-
-.deco-circle.small {
-  width: 40px;
-  height: 40px;
-  right: 60px;
-  top: 10px;
-}
-
-/* 分类 */
-.category-section {
-  background: #fff;
-  margin: 12px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-}
-
-.section-header {
+.header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 12px 8px;
+  margin-bottom: var(--space-md);
 }
 
-.section-title {
-  font-size: 16px;
+.logo {
+  font-family: var(--font-display);
+  font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-primary);
 }
 
-.more {
-  font-size: 12px;
-  color: #999;
-  font-weight: 400;
+.location {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-xs);
+  font-size: 14px;
+  color: var(--color-text-secondary);
 }
 
-.category-list {
+.location i {
+  font-size: 16px;
+}
+
+.search-box {
   display: flex;
-  overflow-x: auto;
-  padding: 0 8px 14px;
-  gap: 4px;
+  align-items: center;
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  gap: var(--space-sm);
 }
 
-.category-list::-webkit-scrollbar {
-  display: none;
+.search-box i {
+  color: var(--color-text-light);
+  font-size: 18px;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+.search-box input::placeholder {
+  color: var(--color-text-light);
+}
+
+/* 主内容 */
+.main {
+  padding: var(--space-md);
+}
+
+/* 分类导航 */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
 .category-item {
-  flex-shrink: 0;
-  width: 68px;
-  text-align: center;
-  padding: 10px 4px;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.category-item:active {
-  background: #f5f5f5;
-  transform: scale(0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
 }
 
 .category-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 8px;
-  background: linear-gradient(135deg, #FFF5F5 0%, #FFF0E8 100%);
-  border-radius: 14px;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
-  transition: transform 0.3s;
+  transition: all 0.2s ease;
 }
 
 .category-item:active .category-icon {
-  transform: scale(0.9);
+  transform: scale(0.95);
+}
+
+.category-icon i {
+  font-size: 28px;
 }
 
 .category-name {
   font-size: 12px;
-  color: #333;
-  line-height: 1.4;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+}
+
+/* 区块标题 */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 18px;
   font-weight: 500;
+  margin-bottom: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text-primary);
 }
 
-/* 热门服务 */
-.hot-section {
-  background: #fff;
-  margin: 12px;
-  border-radius: 16px;
+.more {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 骨架屏 */
+.skeleton-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
-.service-list {
-  padding: 0 12px 12px;
+.skeleton-image {
+  height: 100px;
+  background: linear-gradient(90deg, var(--color-bg-base) 25%, var(--color-bg-warm) 50%, var(--color-bg-base) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-content {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.skeleton-title,
+.skeleton-desc,
+.skeleton-footer {
+  height: 14px;
+  background: var(--color-bg-base);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.skeleton-desc {
+  width: 70%;
+  height: 12px;
+}
+
+.skeleton-footer {
+  width: 40%;
+  margin-bottom: 0;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 服务卡片 */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
 .service-card {
-  display: flex;
-  background: #fafafa;
-  border-radius: 12px;
-  margin-bottom: 10px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition: all 0.2s ease;
 }
 
 .service-card:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.1);
 }
 
 .service-image {
-  width: 90px;
-  height: 90px;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, #FFE5E5 0%, #FFE8DC 100%);
+  height: 100px;
+  background: linear-gradient(135deg, var(--color-primary-soft) 0%, rgba(74, 124, 89, 0.05) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
-.service-icon {
-  font-size: 36px;
+.service-image i {
+  font-size: 40px;
+  color: var(--color-primary);
 }
 
-.service-badge {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  padding: 2px 6px;
-  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-  color: #fff;
-  font-size: 10px;
-  border-radius: 6px;
+.service-content {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.service-title {
+  font-size: 14px;
   font-weight: 500;
-}
-
-.service-info {
-  flex: 1;
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.service-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
-  line-height: 1.4;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
 }
 
 .service-desc {
   font-size: 12px;
-  color: #999;
-  margin: 4px 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+  font-family: var(--font-body);
 }
 
-.service-tags {
-  display: flex;
-  gap: 4px;
-  margin: 4px 0;
-}
-
-.tag {
-  font-size: 10px;
-  padding: 2px 6px;
-  background: #FFF5F5;
-  color: #FF6B35;
-  border-radius: 4px;
-}
-
-.service-meta {
+.service-footer {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 
 .service-price {
-  display: flex;
-  align-items: baseline;
-}
-
-.price-symbol {
-  font-size: 12px;
-  color: #FF6B35;
+  font-family: var(--font-display);
+  font-size: 16px;
   font-weight: 600;
+  color: var(--color-accent-terracotta);
 }
 
-.price-value {
-  font-size: 18px;
-  color: #FF6B35;
-  font-weight: 700;
+.service-price .price-symbol {
+  font-size: 12px;
 }
 
-.price-unit {
-  font-size: 10px;
-  color: #999;
-  margin-left: 2px;
+.service-price small {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 .service-sales {
-  font-size: 11px;
-  color: #999;
+  font-size: 10px;
+  color: var(--color-text-light);
+}
+
+/* 底部导航 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-bg-elevated);
+  border-top: 1px solid var(--color-border);
   display: flex;
+  justify-content: space-around;
+  padding: var(--space-sm) 0;
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 2px;
+  padding: var(--space-xs) var(--space-md);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-family: var(--font-body);
+}
+
+.nav-item i {
+  font-size: 24px;
+}
+
+.nav-item.active {
+  color: var(--color-primary);
 }
 </style>

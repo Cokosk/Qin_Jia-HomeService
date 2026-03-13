@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>勤家工人端 · 设计Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      /* 主色 - 清晰的蓝色，适合户外 */
+      --color-primary: #2563EB;
+      --color-primary-light: #3B82F6;
+      --color-primary-dark: #1D4ED8;
+      --color-primary-soft: rgba(37, 99, 235, 0.1);
+      
+      /* 辅色 */
+      --color-success: #16A34A;
+      --color-warning: #D97706;
+      --color-error: #DC2626;
+      
+      /* 背景 - 浅灰，户外可见 */
+      --color-bg-base: #F3F4F6;
+      --color-bg-card: #FFFFFF;
+      
+      /* 文字 - 高对比度 */
+      --color-text-primary: #111827;
+      --color-text-secondary: #374151;
+      --color-text-muted: #6B7280;
+      
+      /* 边框 */
+      --color-border: #E5E7EB;
+      
+      /* 间距 */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      
+      /* 圆角 */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      
+      /* 字体 */
+      --font-body: "Noto Sans SC", sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding-bottom: 80px;
+    }
+    
+    /* 顶部状态栏 */
+    .header {
+      background: var(--color-primary);
+      color: white;
+      padding: var(--space-md);
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+    
+    .greeting {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .greeting strong {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: var(--space-md);
+    }
+    
+    .header-actions button {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    /* 统计卡片 */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+      background: rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    /* 主内容 */
+    .main {
+      padding: var(--space-md);
+    }
+    
+    /* 快捷操作 */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .quick-action {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .quick-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .quick-action-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--color-primary-soft);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-sm);
+    }
+    
+    .quick-action-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-primary);
+    }
+    
+    .quick-action-label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    
+    /* 区块标题 */
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-title span {
+      color: var(--color-primary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* 任务卡片 */
+    .task-card {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .task-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--color-primary-soft);
+      color: var(--color-primary);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .task-distance {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .task-body {
+      display: flex;
+      gap: var(--space-md);
+    }
+    
+    .task-info {
+      flex: 1;
+    }
+    
+    .task-service {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    
+    .task-customer {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .task-address {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .task-time {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .task-price {
+      text-align: right;
+    }
+    
+    .task-price .price {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-error);
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+    
+    .btn {
+      flex: 1;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+    }
+    
+    .btn-primary {
+      background: var(--color-primary);
+      color: white;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+    }
+    
+    /* 底部导航 */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--color-bg-card);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--space-sm) 0;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: var(--space-xs) var(--space-md);
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 11px;
+    }
+    
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .nav-item.active {
+      color: var(--color-primary);
+    }
+    
+    /* 页面标识 */
+    .page-badge {
+      position: fixed;
+      top: var(--space-md);
+      right: var(--space-md);
+      background: white;
+      color: var(--color-primary);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 200;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面标识 -->
+  <div class="page-badge">
+    工人端 · Lucide Icons
+  </div>
+  
+  <!-- 顶部 -->
+  <header class="header">
+    <div class="header-top">
+      <div class="greeting">
+        你好，<strong>王师傅</strong>
+        <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">今日已接单 3 单</div>
+      </div>
+      <div class="header-actions">
+        <button><i data-lucide="bell" style="width: 20px; height: 20px;"></i></button>
+        <button><i data-lucide="user" style="width: 20px; height: 20px;"></i></button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-value">¥680</div>
+        <div class="stat-label">今日收入</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">12</div>
+        <div class="stat-label">本月订单</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">4.9</div>
+        <div class="stat-label">服务评分</div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- 主内容 -->
+  <main class="main">
+    <!-- 快捷操作 -->
+    <div class="quick-actions">
+      <div class="quick-action">
+        <div class="quick-action-icon"><i data-lucide="list"></i></div>
+        <div class="quick-action-label">抢单池</div>
+      </div>
+      <div class="quick-action">
+        <div class="quick-action-icon" style="background: rgba(22, 163, 74, 0.1);"><i data-lucide="check-circle" style="stroke: var(--color-success);"></i></div>
+        <div class="quick-action-label">待服务</div>
+      </div>
+      <div class="quick-action">
+        <div class="quick-action-icon" style="background: rgba(217, 119, 6, 0.1);"><i data-lucide="wallet" style="stroke: var(--color-warning);"></i></div>
+        <div class="quick-action-label">收入</div>
+      </div>
+      <div class="quick-action">
+        <div class="quick-action-icon"><i data-lucide="history"></i></div>
+        <div class="quick-action-label">历史</div>
+      </div>
+    </div>
+    
+    <!-- 待处理订单 -->
+    <div class="section-title">
+      待处理订单
+      <span>查看全部</span>
+    </div>
+    
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-type"><i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> 家庭保洁</span>
+        <span class="task-distance"><i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> 2.3km</span>
+      </div>
+      <div class="task-body">
+        <div class="task-info">
+          <div class="task-service">深度清洁 · 120平米</div>
+          <div class="task-customer"><i data-lucide="user" style="width: 14px; height: 14px;"></i> 张女士 138****5678</div>
+          <div class="task-address"><i data-lucide="home" style="width: 14px; height: 14px;"></i> 西湖区文三路xxx小区3栋502</div>
+        </div>
+        <div class="task-price">
+          <div class="price">¥120</div>
+        </div>
+      </div>
+      <div class="task-time">
+        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+        预约时间：今天 14:00-16:00
+      </div>
+      <div class="task-actions">
+        <button class="btn btn-outline"><i data-lucide="phone" style="width: 16px; height: 16px;"></i> 联系客户</button>
+        <button class="btn btn-primary"><i data-lucide="navigation" style="width: 16px; height: 16px;"></i> 导航前往</button>
+      </div>
+    </div>
+    
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-type" style="background: rgba(22, 163, 74, 0.1); color: var(--color-success);"><i data-lucide="wrench" style="width: 14px; height: 14px;"></i> 家电维修</span>
+        <span class="task-distance"><i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> 1.8km</span>
+      </div>
+      <div class="task-body">
+        <div class="task-info">
+          <div class="task-service">空调维修 · 不制冷</div>
+          <div class="task-customer"><i data-lucide="user" style="width: 14px; height: 14px;"></i> 李先生 139****2345</div>
+          <div class="task-address"><i data-lucide="home" style="width: 14px; height: 14px;"></i> 西湖区学院路xxx花园2栋301</div>
+        </div>
+        <div class="task-price">
+          <div class="price">¥80</div>
+        </div>
+      </div>
+      <div class="task-time">
+        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+        预约时间：今天 16:30-18:00
+      </div>
+      <div class="task-actions">
+        <button class="btn btn-outline"><i data-lucide="phone" style="width: 16px; height: 16px;"></i> 联系客户</button>
+        <button class="btn btn-primary"><i data-lucide="navigation" style="width: 16px; height: 16px;"></i> 导航前往</button>
+      </div>
+    </div>
+  </main>
+  
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <i data-lucide="home"></i>
+      <span>工作台</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i data-lucide="list"></i>
+      <span>订单</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i data-lucide="bar-chart-2"></i>
+      <span>收入</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i data-lucide="user"></i>
+      <span>我的</span>
+    </a>
+  </nav>
+  
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
