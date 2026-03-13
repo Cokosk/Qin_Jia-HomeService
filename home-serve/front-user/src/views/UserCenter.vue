@@ -1,5 +1,5 @@
 <template>
-  <div class="user-center">
+  <div class="user-center page-bg">
     <!-- 用户信息卡片 -->
     <div class="user-header">
       <div class="header-bg"></div>
@@ -120,7 +120,7 @@
       </van-cell-group>
     </div>
 
-    <van-tabbar v-model="activeTab" route active-color="#FF6B35">
+    <van-tabbar v-model="activeTab" route active-color="var(--color-primary)">
       <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
       <van-tabbar-item icon="apps-o" to="/services">服务</van-tabbar-item>
       <van-tabbar-item icon="orders-o" to="/orders">订单</van-tabbar-item>
@@ -223,7 +223,7 @@ const handleLogout = async () => {
 <style scoped>
 .user-center {
   padding-bottom: 60px;
-  background: #f5f5f5;
+  background: var(--color-bg-base);
   min-height: 100vh;
 }
 
@@ -293,7 +293,7 @@ const handleLogout = async () => {
 
 /* 订单快捷入口 */
 .order-shortcuts {
-  background: #fff;
+  background: var(--color-bg-card);
   margin: 0 12px;
   border-radius: 16px;
   padding: 14px;
@@ -313,12 +313,12 @@ const handleLogout = async () => {
 .section-title {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .more {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   display: flex;
   align-items: center;
   gap: 2px;
@@ -341,19 +341,19 @@ const handleLogout = async () => {
 }
 
 .shortcut-item:active {
-  background: #f5f5f5;
+  background: var(--color-bg-base);
 }
 
 .shortcut-icon {
   width: 44px;
   height: 44px;
   background: linear-gradient(135deg, #FFF5F5 0%, #FFF0E8 100%);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  color: #FF6B35;
+  color: var(--color-primary);
   position: relative;
 }
 
@@ -367,7 +367,7 @@ const handleLogout = async () => {
   background: #FF4D4F;
   color: #fff;
   font-size: 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -375,7 +375,7 @@ const handleLogout = async () => {
 
 .shortcut-text {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* 功能菜单 */
@@ -392,7 +392,7 @@ const handleLogout = async () => {
 .cell-icon {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -427,7 +427,7 @@ const handleLogout = async () => {
 
 .cell-icon.about {
   background: #F5F5F5;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .cell-icon.logout {
@@ -437,6 +437,6 @@ const handleLogout = async () => {
 
 .coupon-count {
   font-size: 12px;
-  color: #FF6B35;
+  color: var(--color-primary);
 }
 </style>

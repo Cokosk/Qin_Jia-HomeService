@@ -366,3 +366,217 @@ body {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
+
+/* === Lucide Icons 图标样式 === */
+/* 基础图标尺寸 */
+i[data-lucide] {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+/* 导航栏图标 */
+.nav-icon {
+  width: 24px !important;
+  height: 24px !important;
+  color: white;
+}
+
+.nav-icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+/* 统计卡片图标 */
+.stat-icon {
+  width: 28px !important;
+  height: 28px !important;
+  color: var(--color-primary);
+}
+
+.stat-icon-wrap {
+  width: 44px;
+  height: 44px;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+}
+
+.stat-card.income .stat-icon-wrap {
+  background: rgba(22, 163, 74, 0.1);
+}
+
+.stat-card.income .stat-icon {
+  color: var(--color-success);
+}
+
+.stat-card.pending .stat-icon-wrap {
+  background: rgba(217, 119, 6, 0.1);
+}
+
+.stat-card.pending .stat-icon {
+  color: var(--color-warning);
+}
+
+.stat-card.completed .stat-icon-wrap {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.stat-card.completed .stat-icon {
+  color: var(--color-primary);
+}
+
+/* 快捷入口图标 */
+.action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon i {
+  width: 22px !important;
+  height: 22px !important;
+  color: white;
+}
+
+.action-icon.grab {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+}
+
+.action-icon.order {
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+}
+
+.action-icon.income {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+}
+
+.action-icon.attendance {
+  background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+}
+
+/* 抢单通知图标 */
+.notice-icon {
+  width: 24px !important;
+  height: 24px !important;
+  color: var(--color-primary);
+}
+
+.notice-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  background: var(--color-primary-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.notice-arrow {
+  width: 20px !important;
+  height: 20px !important;
+  color: var(--color-text-muted);
+}
+
+/* 任务卡片图标 */
+.info-icon {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--color-text-muted);
+}
+
+/* 底部导航图标 */
+.bottom-nav .nav-item i {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.bottom-nav .nav-item.active i {
+  color: var(--color-primary);
+}
+
+/* 徽章样式 */
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  background: var(--color-error);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  background: var(--color-error);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 50%;
+  transform: translateX(100%);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--color-error);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 脉冲动画 */
+.pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}

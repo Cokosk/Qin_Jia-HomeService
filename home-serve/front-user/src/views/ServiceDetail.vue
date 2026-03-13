@@ -1,5 +1,5 @@
 <template>
-  <div class="service-detail">
+  <div class="service-detail page-bg">
     <!-- 顶部导航 -->
     <van-nav-bar title="服务详情" left-arrow @click-left="goBack">
       <template #right>
@@ -10,7 +10,7 @@
     <div class="detail-content" v-if="service">
       <!-- 服务图片轮播 -->
       <div class="service-gallery">
-        <van-swipe class="gallery-swipe" :autoplay="4000" indicator-color="#FF6B35">
+        <van-swipe class="gallery-swipe" :autoplay="4000" indicator-color="var(--color-primary)">
           <van-swipe-item v-for="(img, index) in serviceImages" :key="index">
             <div class="gallery-item" :style="{ background: img.bg }">
               <div class="gallery-icon">{{ getServiceIcon(service.categoryId) }}</div>
@@ -19,7 +19,7 @@
           </van-swipe-item>
         </van-swipe>
         <div class="gallery-badge">
-          <van-icon name="like" color="#FF6B35" />
+          <van-icon name="like" color="var(--color-primary)" />
           <span>{{ service.sales || 100 }}+人已预约</span>
         </div>
       </div>
@@ -59,7 +59,7 @@
       <!-- 服务流程 -->
       <div class="section-card">
         <div class="section-title">
-          <van-icon name="orders-o" color="#FF6B35" />
+          <van-icon name="orders-o" color="var(--color-primary)" />
           <span>服务流程</span>
         </div>
         <div class="process-steps">
@@ -76,7 +76,7 @@
       <!-- 服务说明 -->
       <div class="section-card">
         <div class="section-title">
-          <van-icon name="description" color="#FF6B35" />
+          <van-icon name="description" color="var(--color-primary)" />
           <span>服务说明</span>
         </div>
         <div class="service-notes">
@@ -90,7 +90,7 @@
       <!-- 用户评价 -->
       <div class="section-card">
         <div class="section-title">
-          <van-icon name="comment-o" color="#FF6B35" />
+          <van-icon name="comment-o" color="var(--color-primary)" />
           <span>用户评价</span>
           <span class="more-link" @click="showAllReviews">查看全部</span>
         </div>
@@ -239,7 +239,7 @@ onMounted(() => loadService())
 <style scoped>
 .service-detail {
   padding-bottom: 70px;
-  background: #f5f5f5;
+  background: var(--color-bg-base);
   min-height: 100vh;
 }
 
@@ -267,7 +267,7 @@ onMounted(() => loadService())
 
 .gallery-label {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-secondary);
   background: rgba(255,255,255,0.8);
   padding: 4px 12px;
   border-radius: 20px;
@@ -281,7 +281,7 @@ onMounted(() => loadService())
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -290,10 +290,10 @@ onMounted(() => loadService())
 
 /* 服务卡片 */
 .service-card {
-  background: #fff;
+  background: var(--color-bg-card);
   margin: 12px;
   padding: 16px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
 }
 
@@ -307,7 +307,7 @@ onMounted(() => loadService())
 .service-name {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   flex: 1;
 }
 
@@ -318,24 +318,24 @@ onMounted(() => loadService())
 
 .price-symbol {
   font-size: 14px;
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
 .price-value {
   font-size: 24px;
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 700;
 }
 
 .price-unit {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 .service-desc {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 12px;
 }
@@ -351,7 +351,7 @@ onMounted(() => loadService())
   padding: 4px 10px;
   background: #F6FFED;
   color: #52c41a;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -366,7 +366,7 @@ onMounted(() => loadService())
 
 .meta-item {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -374,10 +374,10 @@ onMounted(() => loadService())
 
 /* 通用section */
 .section-card {
-  background: #fff;
+  background: var(--color-bg-card);
   margin: 12px;
   padding: 16px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
 }
 
@@ -387,14 +387,14 @@ onMounted(() => loadService())
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 14px;
 }
 
 .more-link {
   margin-left: auto;
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   font-weight: 400;
 }
 
@@ -431,12 +431,12 @@ onMounted(() => loadService())
 .step-title {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .step-desc {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   margin-top: 2px;
 }
 
@@ -449,7 +449,7 @@ onMounted(() => loadService())
 
 .note-item {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -462,7 +462,7 @@ onMounted(() => loadService())
   gap: 20px;
   padding: 12px;
   background: #fafafa;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   margin-bottom: 14px;
 }
 
@@ -473,12 +473,12 @@ onMounted(() => loadService())
 .score-value {
   font-size: 36px;
   font-weight: 700;
-  color: #FF6B35;
+  color: var(--color-primary);
 }
 
 .score-label {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   display: block;
 }
 
@@ -498,7 +498,7 @@ onMounted(() => loadService())
 
 .bar-label {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-muted);
   width: 28px;
 }
 
@@ -554,18 +554,18 @@ onMounted(() => loadService())
 
 .review-name {
   font-size: 13px;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 2px;
 }
 
 .review-date {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 .review-content {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 
@@ -576,7 +576,7 @@ onMounted(() => loadService())
   left: 0;
   right: 0;
   padding: 10px 16px;
-  background: #fff;
+  background: var(--color-bg-card);
   box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
   display: flex;
   align-items: center;
@@ -593,7 +593,7 @@ onMounted(() => loadService())
   flex-direction: column;
   align-items: center;
   font-size: 10px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .bar-item span {

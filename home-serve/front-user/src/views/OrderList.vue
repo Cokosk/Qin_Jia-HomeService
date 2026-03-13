@@ -1,5 +1,5 @@
 <template>
-  <div class="order-list">
+  <div class="order-list page-bg">
     <van-nav-bar title="我的订单" />
 
     <van-tabs v-model:active="activeStatus" @change="onStatusChange" sticky shrink>
@@ -113,7 +113,7 @@
       </van-pull-refresh>
     </div>
 
-    <van-tabbar v-model="activeTab" route active-color="#FF6B35">
+    <van-tabbar v-model="activeTab" route active-color="var(--color-primary)">
       <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
       <van-tabbar-item icon="apps-o" to="/services">服务</van-tabbar-item>
       <van-tabbar-item icon="orders-o" to="/orders">订单</van-tabbar-item>
@@ -270,8 +270,7 @@ onMounted(() => {
 
 <style scoped>
 .order-list {
-  padding-bottom: 60px;
-  background: #f5f5f5;
+  padding-bottom: 70px;
   min-height: 100vh;
 }
 
@@ -288,10 +287,10 @@ onMounted(() => {
 }
 
 .order-card {
-  background: #fff;
-  border-radius: 14px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .order-header {
@@ -315,13 +314,13 @@ onMounted(() => {
 .service-name {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .order-status {
   font-size: 12px;
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-weight: 500;
 }
 
@@ -363,12 +362,12 @@ onMounted(() => {
 .info-icon {
   width: 24px;
   height: 24px;
-  background: #f5f5f5;
-  border-radius: 6px;
+  background: var(--color-bg-base);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
@@ -381,12 +380,12 @@ onMounted(() => {
 
 .info-label {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 .info-value {
   font-size: 13px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .order-footer {
@@ -394,7 +393,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 12px 14px;
-  background: #fafafa;
+  background: var(--color-bg-warm);
 }
 
 .order-price {
@@ -404,12 +403,12 @@ onMounted(() => {
 
 .price-label {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 .price-value {
   font-size: 18px;
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 700;
 }
 

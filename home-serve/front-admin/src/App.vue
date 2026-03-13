@@ -11,58 +11,58 @@
       
       <div class="nav-section">
         <div class="nav-section-title">概览</div>
-        <a href="#/" class="nav-item" :class="{ active: activeMenu === '/' }">
+        <router-link to="/" class="nav-item" :class="{ active: activeMenu === '/' }">
           <i class="ti ti-dashboard"></i>
           <span>数据看板</span>
-        </a>
-        <a href="#/analytics" class="nav-item" :class="{ active: activeMenu === '/analytics' }">
+        </router-link>
+        <router-link to="/analytics" class="nav-item" :class="{ active: activeMenu === '/analytics' }">
           <i class="ti ti-chart-line"></i>
           <span>数据分析</span>
-        </a>
+        </router-link>
       </div>
       
       <div class="nav-section">
         <div class="nav-section-title">业务管理</div>
-        <a href="#/orders" class="nav-item" :class="{ active: activeMenu === '/orders' }">
+        <router-link to="/orders" class="nav-item" :class="{ active: activeMenu === '/orders' }">
           <i class="ti ti-file-text"></i>
           <span>订单管理</span>
-        </a>
-        <a href="#/users" class="nav-item" :class="{ active: activeMenu === '/users' }">
+        </router-link>
+        <router-link to="/users" class="nav-item" :class="{ active: activeMenu === '/users' }">
           <i class="ti ti-users"></i>
           <span>用户管理</span>
-        </a>
-        <a href="#/workers" class="nav-item" :class="{ active: activeMenu === '/workers' }">
+        </router-link>
+        <router-link to="/workers" class="nav-item" :class="{ active: activeMenu === '/workers' }">
           <i class="ti ti-user-check"></i>
           <span>工人管理</span>
-        </a>
-        <a href="#/services" class="nav-item" :class="{ active: activeMenu === '/services' }">
+        </router-link>
+        <router-link to="/services" class="nav-item" :class="{ active: activeMenu === '/services' }">
           <i class="ti ti-package"></i>
           <span>服务管理</span>
-        </a>
+        </router-link>
       </div>
       
       <div class="nav-section">
         <div class="nav-section-title">财务</div>
-        <a href="#/finance" class="nav-item" :class="{ active: activeMenu === '/finance' }">
+        <router-link to="/finance" class="nav-item" :class="{ active: activeMenu === '/finance' }">
           <i class="ti ti-receipt"></i>
           <span>财务报表</span>
-        </a>
-        <a href="#/settlement" class="nav-item" :class="{ active: activeMenu === '/settlement' }">
+        </router-link>
+        <router-link to="/settlement" class="nav-item" :class="{ active: activeMenu === '/settlement' }">
           <i class="ti ti-wallet"></i>
           <span>结算管理</span>
-        </a>
+        </router-link>
       </div>
       
       <div class="nav-section">
         <div class="nav-section-title">系统</div>
-        <a href="#/settings" class="nav-item" :class="{ active: activeMenu === '/settings' }">
+        <router-link to="/settings" class="nav-item" :class="{ active: activeMenu === '/settings' }">
           <i class="ti ti-settings"></i>
           <span>系统设置</span>
-        </a>
-        <a href="#/logs" class="nav-item" :class="{ active: activeMenu === '/logs' }">
+        </router-link>
+        <router-link to="/logs" class="nav-item" :class="{ active: activeMenu === '/logs' }">
           <i class="ti ti-history"></i>
           <span>操作日志</span>
-        </a>
+        </router-link>
       </div>
     </el-aside>
     

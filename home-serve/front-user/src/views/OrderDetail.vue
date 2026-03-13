@@ -1,5 +1,5 @@
 <template>
-  <div class="order-detail">
+  <div class="order-detail page-bg">
     <van-nav-bar title="订单详情" left-arrow @click-left="goBack" />
 
     <div v-if="order" class="detail-content">
@@ -17,7 +17,7 @@
       <!-- 订单进度时间线 -->
       <div class="section-card">
         <div class="section-title">
-          <van-icon name="clock-o" color="#FF6B35" />
+          <van-icon name="clock-o" color="var(--color-primary)" />
           <span>订单进度</span>
         </div>
         <div class="timeline">
@@ -39,7 +39,7 @@
       <!-- 服务人员信息 -->
       <div class="section-card" v-if="order.workerName">
         <div class="section-title">
-          <van-icon name="user-o" color="#FF6B35" />
+          <van-icon name="user-o" color="var(--color-primary)" />
           <span>服务人员</span>
         </div>
         <div class="worker-info">
@@ -64,7 +64,7 @@
       <!-- 服务信息 -->
       <div class="section-card">
         <div class="section-title">
-          <van-icon name="description" color="#FF6B35" />
+          <van-icon name="description" color="var(--color-primary)" />
           <span>服务信息</span>
         </div>
         <div class="info-list">
@@ -90,7 +90,7 @@
       <!-- 订单信息 -->
       <div class="section-card">
         <div class="section-title">
-          <van-icon name="orders-o" color="#FF6B35" />
+          <van-icon name="orders-o" color="var(--color-primary)" />
           <span>订单信息</span>
         </div>
         <div class="info-list">
@@ -215,7 +215,7 @@ onMounted(() => loadOrder())
 
 <style scoped>
 .order-detail {
-  background: #f5f5f5;
+  background: var(--color-bg-base);
   min-height: 100vh;
   padding-bottom: 80px;
 }
@@ -230,7 +230,7 @@ onMounted(() => loadOrder())
   align-items: center;
   gap: 16px;
   padding: 20px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   margin-bottom: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
@@ -269,19 +269,19 @@ onMounted(() => loadOrder())
 .status-title {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 4px;
 }
 
 .status-desc {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* section卡片 */
 .section-card {
-  background: #fff;
-  border-radius: 16px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
   padding: 16px;
   margin-bottom: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
@@ -293,7 +293,7 @@ onMounted(() => loadOrder())
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 14px;
 }
 
@@ -345,18 +345,18 @@ onMounted(() => loadOrder())
 }
 
 .timeline-item.active .timeline-dot {
-  background: #FF6B35;
+  background: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(255,107,53,0.2);
 }
 
 .timeline-title {
   font-size: 14px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .timeline-time {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   margin-top: 2px;
 }
 
@@ -387,12 +387,12 @@ onMounted(() => loadOrder())
 .worker-name {
   font-size: 15px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .worker-meta {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -418,20 +418,20 @@ onMounted(() => loadOrder())
 
 .info-label {
   font-size: 13px;
-  color: #999;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
 .info-value {
   font-size: 13px;
-  color: #333;
+  color: var(--color-text-primary);
   text-align: right;
   word-break: break-all;
 }
 
 .info-value.price {
   font-size: 18px;
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 700;
 }
 
@@ -448,7 +448,7 @@ onMounted(() => loadOrder())
   left: 0;
   right: 0;
   padding: 10px 16px;
-  background: #fff;
+  background: var(--color-bg-card);
   box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
   display: flex;
   gap: 12px;

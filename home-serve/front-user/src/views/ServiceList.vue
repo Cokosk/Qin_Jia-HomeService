@@ -1,5 +1,5 @@
 <template>
-  <div class="service-list">
+  <div class="service-list page-bg">
     <!-- 顶部搜索栏 -->
     <div class="search-header">
       <van-search 
@@ -11,7 +11,7 @@
         @cancel="$router.back()"
       >
         <template #left-icon>
-          <van-icon name="search" color="#FF6B35" />
+          <van-icon name="search" color="var(--color-primary)" />
         </template>
       </van-search>
     </div>
@@ -93,7 +93,7 @@
                   <span class="price-unit">/次</span>
                 </div>
                 <div class="service-sales">
-                  <van-icon name="fire-o" color="#FF6B35" />
+                  <van-icon name="fire-o" color="var(--color-primary)" />
                   已售{{ service.sales || 100 }}+
                 </div>
               </div>
@@ -115,7 +115,7 @@
     </div>
 
     <!-- 底部导航 -->
-    <van-tabbar v-model="activeTab" active-color="#FF6B35" inactive-color="#999">
+    <van-tabbar v-model="activeTab" active-color="var(--color-primary)" inactive-color="#999">
       <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
       <van-tabbar-item icon="apps-o" to="/services">服务</van-tabbar-item>
       <van-tabbar-item icon="orders-o" to="/orders">订单</van-tabbar-item>
@@ -271,8 +271,7 @@ onMounted(async () => {
 
 <style scoped>
 .service-list {
-  padding-bottom: 60px;
-  background: #f5f5f5;
+  padding-bottom: 70px;
   min-height: 100vh;
 }
 
@@ -280,12 +279,12 @@ onMounted(async () => {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-soft);
 }
 
 .filter-section {
-  background: #fff;
+  background: var(--color-bg-card);
 }
 
 .sort-bar {
@@ -297,7 +296,7 @@ onMounted(async () => {
 
 .sort-item {
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -306,7 +305,7 @@ onMounted(async () => {
 }
 
 .sort-item.active {
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 500;
 }
 
@@ -320,11 +319,11 @@ onMounted(async () => {
 
 .service-card {
   display: flex;
-  background: #fff;
-  border-radius: 12px;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
   margin-bottom: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-soft);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -355,7 +354,7 @@ onMounted(async () => {
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
   color: #fff;
   font-size: 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 500;
 }
 
@@ -370,13 +369,13 @@ onMounted(async () => {
 .service-name {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.4;
 }
 
 .service-desc {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-muted);
   margin: 4px 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -393,8 +392,8 @@ onMounted(async () => {
   font-size: 10px;
   padding: 2px 6px;
   background: #FFF5F5;
-  color: #FF6B35;
-  border-radius: 4px;
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
 }
 
 .service-meta {
@@ -410,25 +409,25 @@ onMounted(async () => {
 
 .price-symbol {
   font-size: 12px;
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
 .price-value {
   font-size: 18px;
-  color: #FF6B35;
+  color: var(--color-primary);
   font-weight: 700;
 }
 
 .price-unit {
   font-size: 10px;
-  color: #999;
+  color: var(--color-text-muted);
   margin-left: 2px;
 }
 
 .service-sales {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-muted);
   display: flex;
   align-items: center;
   gap: 2px;
@@ -437,7 +436,7 @@ onMounted(async () => {
 .list-end {
   text-align: center;
   padding: 20px;
-  color: #999;
+  color: var(--color-text-muted);
   font-size: 12px;
 }
 </style>
