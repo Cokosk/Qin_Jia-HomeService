@@ -1,43 +1,65 @@
 import axios from 'axios'
 
-const request = axios.create({
+const instance = axios.create({
   baseURL: '/api',
-  timeout: 10000
+  timeout: 15000
 })
 
-// 请求拦截
-request.interceptors.request.use(
-  config => config,
-  error => Promise.reject(error)
-)
+instance.interceptors.request.use(config => {
+  const token = localStorage.getItem('admin_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
-// 响应拦截
-request.interceptors.response.use(
+instance.interceptors.response.use(
   response => response.data,
-  error => Promise.reject(error)
+  error => {
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          localStorage.removeItem('admin_token')
+          window.location.href = '/login'
+          break
+        case 403:
+          console.error('权限不足')
+          break
+        case 500:
+          console.error('服务器错误')
+          break
+      }
+    } else if (error.code === 'ECONNABORTED') {
+      console.error('请求超时')
+    }
+    return Promise.reject(error)
+  }
 )
 
-// 订单API
-export const orderApi = {
-  list: (params) => request.get('/order/list', { params }),
-  detail: (id) => request.get('/order/detail', { params: { orderId: id } }),
-  cancel: (id) => request.post('/order/cancel', null, { params: { orderId: id } }),
-  grabList: () => request.get('/order/grab-pool')
+const api = {
+  admin: {
+    getStats: () => instance.get('/admin/stats'),
+    getUserList: (params) => instance.get('/admin/user/list', { params }),
+    getUserDetail: (userId) => instance.get('/admin/user/detail', { params: { userId } }),
+    updateUserStatus: (userId, status) => instance.post('/admin/user/status', null, { params: { userId, status } }),
+    updateUserRole: (userId, role) => instance.post('/admin/user/role', null, { params: { userId, role } }),
+    adjustCredit: (userId, creditScore) => instance.post('/admin/user/credit', null, { params: { userId, creditScore } }),
+    
+    getServiceList: (params) => instance.get('/admin/service/list', { params }),
+    addService: (data) => instance.post('/admin/service/add', data),
+    updateService: (data) => instance.post('/admin/service/update', data),
+    updateServiceStatus: (serviceId, status) => instance.post('/admin/service/status', null, { params: { serviceId, status } }),
+    deleteService: (serviceId) => instance.post('/admin/service/delete', null, { params: { serviceId } }),
+    
+    getOrderList: (params) => instance.get('/admin/order/list', { params }),
+    cancelOrder: (orderId) => instance.post('/admin/order/cancel', null, { params: { orderId } }),
+    
+    getReviewList: (params) => instance.get('/admin/review/list', { params }),
+    updateReviewStatus: (reviewId, status) => instance.post('/admin/review/status', null, { params: { reviewId, status } })
+  },
+  service: {
+    getCategories: () => instance.get('/service/category')
+  }
 }
 
-// 服务API
-export const serviceApi = {
-  categoryList: () => request.get('/service/category'),
-  list: (params) => request.get('/service/list', { params }),
-  detail: (id) => request.get('/service/detail', { params: { serviceId: id } }),
-  hot: () => request.get('/service/hot'),
-  clearCache: (params) => request.post('/service/clear-cache', null, { params })
-}
-
-// 用户API
-export const userApi = {
-  list: (params) => request.get('/user/list', { params }),
-  info: (id) => request.get('/user/info', { params: { userId: id } })
-}
-
-export default request
+export default api
