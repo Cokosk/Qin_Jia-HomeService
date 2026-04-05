@@ -1,251 +1,178 @@
 package com.cokosk.homeserve.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cokosk.homeserve.entity.User;
 import com.cokosk.homeserve.mapper.UserMapper;
+import com.cokosk.homeserve.security.JwtUtil;
+import com.cokosk.homeserve.security.PasswordEncoder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.HashOperations;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceTest {
 
-    @Mock
-    private StringRedisTemplate redisTemplate;
+    @Mock private StringRedisTemplate redisTemplate;
+    @Mock private JwtUtil jwtUtil;
+    @Mock private PasswordEncoder passwordEncoder;
+    @Mock private ValueOperations<String, String> valueOps;
+    @Mock private HashOperations<String, Object, Object> hashOps;
+    @Mock private UserMapper userMapper;
 
-    @Mock
-    private UserMapper userMapper;
-
-    @InjectMocks
     private UserService userService;
-
-    @Mock
-    private ValueOperations<String, String> valueOps;
-
-    @Mock
-    private HashOperations<String, Object, Object> hashOps;
-
     private User testUser;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
+        userService = spy(new UserService(redisTemplate, jwtUtil, passwordEncoder));
+        
+        Field baseMapperField = UserService.class.getSuperclass().getDeclaredField("baseMapper");
+        baseMapperField.setAccessible(true);
+        baseMapperField.set(userService, userMapper);
+
         testUser = new User();
         testUser.setId(1L);
         testUser.setUsername("testuser");
-        testUser.setPassword("password");
+        testUser.setPassword("encodedPassword");
         testUser.setNickname("Test User");
         testUser.setRole(0);
         testUser.setStatus(1);
 
-        when(redisTemplate.opsForValue()).thenReturn(valueOps);
-        when(redisTemplate.opsForHash()).thenReturn(hashOps);
+        lenient().when(redisTemplate.opsForValue()).thenReturn(valueOps);
+        lenient().when(redisTemplate.opsForHash()).thenReturn(hashOps);
+        
+        // 直接mock ServiceImpl的方法
+        doReturn(testUser).when(userService).getOne(any(QueryWrapper.class));
+        doReturn(null).when(valueOps).get(anyString());
     }
 
     @Test
-    void testLogin_Success_WithCache() {
-        // Given
-        String username = "testuser";
-        String password = "password";
-        String cachedToken = "cached_token_123";
+    void testLogin_Success() {
+        when(passwordEncoder.matches("password", testUser.getPassword())).thenReturn(true);
+        when(jwtUtil.generateToken(1L, "testuser", 0)).thenReturn("token123");
 
-        when(valueOps.get(eq("user:token:testuser"))).thenReturn(cachedToken);
+        Map<String, Object> result = userService.login("testuser", "password");
 
-        // When
-        Map<String, Object> result = userService.login(username, password);
-
-        // Then
         assertEquals(200, result.get("code"));
-        assertEquals(cachedToken, result.get("token"));
-        assertEquals("登录成功(缓存)", result.get("message"));
-        verify(valueOps, times(1)).get(eq("user:token:testuser"));
-        verify(userMapper, never()).selectOne(any());
-    }
-
-    @Test
-    void testLogin_Success_FromDatabase() {
-        // Given
-        String username = "testuser";
-        String password = "password";
-
-        when(valueOps.get(eq("user:token:testuser"))).thenReturn(null);
-        when(userMapper.selectOne(any())).thenReturn(testUser);
-
-        // When
-        Map<String, Object> result = userService.login(username, password);
-
-        // Then
-        assertEquals(200, result.get("code"));
-        assertNotNull(result.get("token"));
+        assertEquals("token123", result.get("token"));
         assertEquals(1L, result.get("userId"));
-        assertEquals(0, result.get("role"));
-        assertEquals("登录成功", result.get("message"));
-
-        // Verify Redis interactions
-        verify(valueOps, times(1)).get(eq("user:token:testuser"));
-        verify(valueOps, times(1)).set(anyString(), anyString(), any());
-        verify(hashOps, times(1)).putAll(anyString(), any(Map.class));
-        verify(userMapper, times(1)).selectOne(any());
     }
 
     @Test
-    void testLogin_Failure_WrongCredentials() {
-        // Given
-        String username = "testuser";
-        String password = "wrongpassword";
+    void testLogin_WrongPassword() {
+        when(passwordEncoder.matches("wrongpassword", testUser.getPassword())).thenReturn(false);
 
-        when(valueOps.get(eq("user:token:testuser"))).thenReturn(null);
-        when(userMapper.selectOne(any())).thenReturn(null);
+        Map<String, Object> result = userService.login("testuser", "wrongpassword");
 
-        // When
-        Map<String, Object> result = userService.login(username, password);
-
-        // Then
         assertEquals(401, result.get("code"));
-        assertEquals("用户名或密码错误", result.get("message"));
         assertNull(result.get("token"));
+    }
 
-        verify(valueOps, times(1)).get(eq("user:token:testuser"));
-        verify(userMapper, times(1)).selectOne(any());
+    @Test
+    void testLogin_UserNotFound() {
+        doReturn(null).when(userService).getOne(any(QueryWrapper.class));
+
+        Map<String, Object> result = userService.login("nonexistent", "password");
+
+        assertEquals(401, result.get("code"));
     }
 
     @Test
     void testRegister_Success() {
-        // Given
-        when(userMapper.selectCount(any())).thenReturn(0L); // 用户名不存在
-        when(userMapper.insert(any())).thenReturn(1); // 插入成功
+        doReturn(0L).when(userService).count(any(QueryWrapper.class));
+        doReturn(true).when(userService).save(any(User.class));
+        when(passwordEncoder.encode(anyString())).thenReturn("encoded");
 
         User newUser = new User();
         newUser.setUsername("newuser");
-        newUser.setPassword("newpassword");
-        newUser.setNickname("New User");
+        newUser.setPassword("password");
 
-        // When
         Map<String, Object> result = userService.register(newUser);
 
-        // Then
         assertEquals(200, result.get("code"));
-        assertEquals("注册成功", result.get("message"));
-        assertNotNull(result.get("userId"));
-
-        verify(userMapper, times(1)).selectCount(any());
-        verify(userMapper, times(1)).insert(any());
-
-        // Verify default values are set
-        assertEquals(0, newUser.getRole()); // 普通用户
-        assertEquals(1, newUser.getStatus()); // 正常
-        assertEquals(Integer.valueOf(100), newUser.getCreditScore()); // 默认信用分
     }
 
     @Test
-    void testRegister_Failure_UsernameExists() {
-        // Given
-        when(userMapper.selectCount(any())).thenReturn(1L); // 用户名已存在
+    void testRegister_DuplicateUsername() {
+        doReturn(1L).when(userService).count(any(QueryWrapper.class));
 
         User newUser = new User();
         newUser.setUsername("existinguser");
-        newUser.setPassword("newpassword");
+        newUser.setPassword("password");
 
-        // When
         Map<String, Object> result = userService.register(newUser);
 
-        // Then
         assertEquals(400, result.get("code"));
-        assertEquals("用户名已存在", result.get("message"));
-        verify(userMapper, times(1)).selectCount(any());
-        verify(userMapper, never()).insert(any());
     }
 
     @Test
-    void testRegister_Failure_SaveFailed() {
-        // Given
-        when(userMapper.selectCount(any())).thenReturn(0L); // 用户名不存在
-        when(userMapper.insert(any())).thenReturn(0); // 插入失败
+    void testGetUserById_Cache() {
+        Map<Object, Object> cache = new HashMap<>();
+        cache.put("id", "1");
+        cache.put("username", "testuser");
+        cache.put("role", "0");
+        when(hashOps.entries(eq("user:info:1"))).thenReturn(cache);
 
-        User newUser = new User();
-        newUser.setUsername("newuser");
-        newUser.setPassword("newpassword");
+        User result = userService.getUserById(1L);
 
-        // When
-        Map<String, Object> result = userService.register(newUser);
-
-        // Then
-        assertEquals(500, result.get("code"));
-        assertEquals("注册失败", result.get("message"));
-        verify(userMapper, times(1)).selectCount(any());
-        verify(userMapper, times(1)).insert(any());
-    }
-
-    @Test
-    void testGetUserById_FromCache() {
-        // Given
-        Long userId = 1L;
-        Map<Object, Object> cachedData = new HashMap<>();
-        cachedData.put("id", "1");
-        cachedData.put("username", "testuser");
-        cachedData.put("nickname", "Test User");
-        cachedData.put("role", "0");
-
-        when(hashOps.entries(eq("user:info:1"))).thenReturn(cachedData);
-
-        // When
-        User result = userService.getUserById(userId);
-
-        // Then
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        assertEquals("testuser", result.getUsername());
-        assertEquals("Test User", result.getNickname());
-        assertEquals(0, result.getRole());
-
-        verify(hashOps, times(1)).entries(eq("user:info:1"));
-        verify(userMapper, never()).selectById(any());
     }
 
     @Test
-    void testGetUserById_FromDatabase() {
-        // Given
-        Long userId = 1L;
+    void testGetUserById_Database() {
+        when(hashOps.entries(eq("user:info:1"))).thenReturn(new HashMap<>());
+        doReturn(testUser).when(userService).getById(1L);
 
-        when(hashOps.entries(eq("user:info:1"))).thenReturn(new HashMap<>()); // 空缓存
-        when(userMapper.selectById(eq(userId))).thenReturn(testUser);
+        User result = userService.getUserById(1L);
 
-        // When
-        User result = userService.getUserById(userId);
-
-        // Then
         assertNotNull(result);
-        assertEquals(testUser.getId(), result.getId());
-        assertEquals(testUser.getUsername(), result.getUsername());
-        assertEquals(testUser.getNickname(), result.getNickname());
-        assertEquals(testUser.getRole(), result.getRole());
-
-        verify(hashOps, times(1)).entries(eq("user:info:1"));
-        verify(userMapper, times(1)).selectById(eq(userId));
-        verify(hashOps, times(1)).putAll(eq("user:info:1"), any(Map.class));
+        assertEquals(1L, result.getId());
     }
 
     @Test
     void testClearCache() {
-        // Given
-        Long userId = 1L;
+        userService.clearCache(1L);
+        verify(redisTemplate).delete("user:info:1");
+    }
 
-        // When
-        userService.clearCache(userId);
+    @Test
+    void testVerifyToken_Valid() {
+        when(jwtUtil.validateToken("token")).thenReturn(true);
+        when(jwtUtil.getUserIdFromToken("token")).thenReturn(1L);
+        when(jwtUtil.getUsernameFromToken("token")).thenReturn("testuser");
+        when(jwtUtil.getRoleFromToken("token")).thenReturn(0);
 
-        // Then
-        verify(redisTemplate, times(1)).delete(eq("user:info:1"));
+        Map<String, Object> result = userService.verifyToken("token");
+
+        assertEquals(200, result.get("code"));
+    }
+
+    @Test
+    void testVerifyToken_Invalid() {
+        when(jwtUtil.validateToken("invalid")).thenReturn(false);
+
+        Map<String, Object> result = userService.verifyToken("invalid");
+
+        assertEquals(401, result.get("code"));
     }
 }

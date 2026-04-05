@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,18 @@ public class OrderController {
             HttpServletRequest request) {
         
         Map<String, Object> result = new HashMap<>();
+        
+        // 参数校验
+        if (orderId == null || orderId <= 0) {
+            result.put("code", 400);
+            result.put("message", "订单ID无效");
+            return result;
+        }
+        if (workerId == null || workerId <= 0) {
+            result.put("code", 400);
+            result.put("message", "服务者ID无效");
+            return result;
+        }
         
         // 获取客户端IP用于限流
         String clientIp = getClientIp(request);
@@ -69,10 +82,43 @@ public class OrderController {
     @PostMapping("/create")
     public Map<String, Object> createOrder(@RequestBody Order order) {
         Map<String, Object> result = new HashMap<>();
+        
+        // 参数校验
+        if (order.getUserId() == null || order.getUserId() <= 0) {
+            result.put("code", 400);
+            result.put("message", "用户ID无效");
+            return result;
+        }
+        if (order.getServiceId() == null || order.getServiceId() <= 0) {
+            result.put("code", 400);
+            result.put("message", "服务ID无效");
+            return result;
+        }
+        if (order.getPrice() == null || order.getPrice().doubleValue() <= 0) {
+            result.put("code", 400);
+            result.put("message", "价格无效");
+            return result;
+        }
+        if (order.getAddress() == null || order.getAddress().isEmpty()) {
+            result.put("code", 400);
+            result.put("message", "服务地址不能为空");
+            return result;
+        }
+        if (order.getPhone() == null || order.getPhone().isEmpty()) {
+            result.put("code", 400);
+            result.put("message", "联系电话不能为空");
+            return result;
+        }
+        
         // 生成订单号
         order.setOrderNo("ORD" + System.currentTimeMillis());
         order.setStatus(0); // 待抢单
         order.setPayStatus(0); // 未支付
+        
+        // 设置创建时间（确保有值）
+        if (order.getCreateTime() == null) {
+            order.setCreateTime(LocalDateTime.now());
+        }
         
         boolean saved = orderService.save(order);
         
@@ -104,6 +150,10 @@ public class OrderController {
         if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-        return ip;
+        // 处理多IP情况（取第一个）
+        if (ip != null && ip.contains(",")) {
+            ip = ip.split(",")[0].trim();
+        }
+        return ip != null ? ip : "unknown";
     }
 }

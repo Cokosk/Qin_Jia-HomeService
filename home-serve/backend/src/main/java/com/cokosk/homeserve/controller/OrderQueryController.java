@@ -45,23 +45,29 @@ public class OrderQueryController {
     }
     
     /**
-     * 服务者订单列表（可抢单列表）
+     * 服务者订单列表（包括历史订单）
      */
     @GetMapping("/worker-list")
     public Map<String, Object> getWorkerOrderList(
             @RequestParam Long workerId,
+            @RequestParam(required = false) Integer status,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         
         Map<String, Object> result = new HashMap<>();
         
-        // 获取服务者已接的订单
         Page<Order> page = new Page<>(pageNum, pageSize);
-        Page<Order> orderPage = orderService.page(page,
-            new QueryWrapper<Order>()
-                .eq("worker_id", workerId)
-                .in("status", 1, 2) // 已接单、服务中
-                .orderByAsc("appointment_time"));
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<Order>()
+            .eq("worker_id", workerId);
+        
+        // 如果指定了状态，按状态筛选
+        if (status != null) {
+            queryWrapper.eq("status", status);
+        }
+        
+        queryWrapper.orderByDesc("create_time");
+        
+        Page<Order> orderPage = orderService.page(page, queryWrapper);
         
         result.put("code", 200);
         result.put("data", orderPage.getRecords());
@@ -124,7 +130,7 @@ public class OrderQueryController {
         
         if (updated) {
             // 清除Redis缓存
-            // orderService.clearCache(orderId);
+            orderService.clearCache(orderId);
             result.put("code", 200);
             result.put("message", "订单已取消");
         } else {

@@ -5,14 +5,14 @@ spring:
   application:
     name: home-serve
 
-  # MySQL 配置（支持环境变量覆盖）
+  # MySQL 配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/home_serve?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:13307/home_serve?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:root}
 
-  # Redis 配置（支持环境变量覆盖）
+  # Redis 配置
   redis:
     host: ${SPRING_REDIS_HOST:localhost}
     port: ${SPRING_REDIS_PORT:6379}
@@ -33,9 +33,9 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# JWT 配置
+# JWT 配置（密钥长度需>=256位用于HS256）
 jwt:
-  secret: home-serve-secret-key-2024
+  secret: home-serve-secret-key-2024-default-secret-key-for-jwt-token-security
   expiration: 86400000
 
 # Redis 分布式锁配置

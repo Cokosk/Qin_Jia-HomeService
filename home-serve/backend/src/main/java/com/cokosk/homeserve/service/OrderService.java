@@ -124,8 +124,8 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
      */
     public void addToGrabPool(Order order) {
         // 使用Sorted Set按创建时间排序
-        String score = String.valueOf(order.getCreateTime().toLocalTime().toSecondOfDay());
-        redisTemplate.opsForZSet().add("order:grab:pool", order.getId().toString(), Double.parseDouble(score));
+        long timestamp = order.getCreateTime() != null ? order.getCreateTime().toEpochSecond(java.time.ZoneOffset.ofHours(8)) : System.currentTimeMillis() / 1000;
+        redisTemplate.opsForZSet().add("order:grab:pool", order.getId().toString(), timestamp);
         // 同时更新订单状态缓存
         redisTemplate.opsForValue().set("order:status:" + order.getId(), "0");
     }
@@ -147,5 +147,15 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
     
     public String getCachedServiceList(String categoryKey) {
         return redisTemplate.opsForValue().get("service:category:" + categoryKey);
+    }
+    
+    /**
+     * 清除订单相关缓存
+     */
+    public void clearCache(Long orderId) {
+        // 清除订单状态缓存
+        redisTemplate.delete("order:status:" + orderId);
+        // 从抢单池移除
+        redisTemplate.opsForZSet().remove("order:grab:pool", orderId.toString());
     }
 }
