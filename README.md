@@ -1,12 +1,24 @@
 # 勤家家政服务 (Qin_Jia Home Service)
 
-> 基于 Redis 高并发响应的家政服务平台
+<div align="center">
 
-## 项目概述
+![Vue](https://img.shields.io/badge/Vue-3.4+-42b883?style=flat&logo=vue.js)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2+-6DB33F?style=flat&logo=spring)
+![uni-app](https://img.shields.io/badge/uni-app-4.0+-007AFF?style=flat)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-勤家家政服务平台是一个面向用户和服务者的双向预约抢单系统。用户可以浏览服务、预约下单；服务者可以接单抢单、管理订单。系统重点突出 Redis 在高并发场景下的应用：缓存热点数据、分布式锁控制抢单、接口限流。
+专业家政服务一站式解决方案，提供用户端、工人端、管理后台三端分离架构。
 
-**技术栈：** Spring Boot 2.7 + Redis + MySQL 8.0 + Vue3 + Element Plus
+</div>
+
+## 项目介绍
+
+勤家 (Qin_Jia) 是一款面向家政服务行业的全栈解决方案，支持：
+
+- 👤 **用户端** - 查找服务、在线下单、评价
+- 👷 **工人端** - 抢单池、接单服务、收入管理
+- ⚙️ **管理后台** - 数据统计、订单管理、用户管理
+- 📱 **微信小程序** - 移动端服务入口
 
 ## 访问地址
 
@@ -16,6 +28,25 @@
 | 用户端 | http://101.200.180.182/user | ✅ 已部署 |
 | 服务者端 | http://101.200.180.182/worker | ✅ 已部署 |
 
+## 技术架构
+
+### 前端
+
+| 项目 | 技术栈 | 端口 |
+|------|--------|------|
+| front-user | Vue 3 + Vite + Vant 4 | 5173 |
+| front-worker | Vue 3 + Vite + Vant 4 | 5174 |
+| front-admin | Vue 3 + Vite + Element Plus | 3000 |
+| ts-miniapp | uni-app + Vue 3 + TypeScript | - |
+
+### 后端
+
+- Spring Boot 3.2 + Spring Security
+- MyBatis-Plus + MySQL 8.0
+- Redis (缓存 + 分布式锁)
+- Redisson 分布式锁
+- JWT 认证
+
 ## 功能特性
 
 ### 用户端 ✅ 已上线
@@ -23,6 +54,8 @@
 - 📅 预约服务、选择时间
 - 📋 订单管理与查询
 - 👤 个人中心
+- ⭐ 双向评价系统
+- 💳 支付集成 (Mock)
 
 ### 服务者端 ✅ 已上线
 - 📋 查看抢单池
@@ -69,26 +102,16 @@
 Qin_Jia-HomeService/
 ├── home-serve/                # 项目主目录
 │   ├── backend/               # 后端服务
-│   │   ├── src/main/java/     # Java 源码
-│   │   ├── src/test/java/     # 测试用例
-│   │   └── pom.xml            # Maven 配置
-│   ├── front-admin/           # 管理后台前端 ✅
-│   │   ├── src/               # Vue3 源码
-│   │   └── package.json       # npm 配置
-│   ├── front-user/            # 用户端前端 ✅
-│   │   ├── src/               # Vue3 源码
-│   │   │   ├── views/         # 页面组件
-│   │   │   ├── api/           # API 封装
-│   │   │   ├── router/        # 路由配置
-│   │   │   └── stores/        # Pinia 状态
-│   │   └── package.json
-│   ├── front-worker/          # 服务者端前端 ✅
-│   │   ├── src/               # Vue3 源码
-│   │   │   ├── views/         # 页面组件
-│   │   │   ├── api/           # API 封装
-│   │   │   ├── router/        # 路由配置
-│   │   │   └── stores/        # Pinia 状态
-│   │   └── package.json
+│   │   └── src/main/java/com/cokosk/homeserve/
+│   │       ├── controller/    # REST API
+│   │       ├── service/       # 业务逻辑
+│   │       ├── mapper/        # 数据访问
+│   │       ├── entity/        # 实体类
+│   │       └── lock/          # 分布式锁
+│   ├── front-admin/           # 管理后台前端
+│   ├── front-user/            # 用户端前端
+│   ├── front-worker/          # 服务者端前端
+│   ├── ts-miniapp/            # 微信小程序 (uni-app)
 │   ├── docs/                  # 开发文档
 │   ├── sql/                   # 数据库脚本
 │   ├── nginx/                 # Nginx 配置
@@ -101,30 +124,34 @@ Qin_Jia-HomeService/
 
 ### 环境要求
 
-- JDK 21+
-- Maven 3.9+
-- Node.js 18+
-- MySQL 8.0+
-- Redis 7.0+
-- Docker & Docker Compose
+| 软件 | 版本 |
+|------|------|
+| JDK | 21+ |
+| Maven | 3.9+ |
+| Node.js | 18+ |
+| MySQL | 8.0+ |
+| Redis | 7.0+ |
 
 ### 本地开发
 
 ```bash
 # 1. 克隆项目
 git clone https://github.com/Cokosk/Qin_Jia-HomeService.git
-cd Qin_Jia-HomeService/home-serve
+cd Qin_Jia-HomeService
 
-# 2. 初始化数据库
+# 2. 进入项目目录
+cd home-serve
+
+# 3. 初始化数据库
 mysql -u root -p < sql/init.sql
 
-# 3. 启动后端
+# 4. 启动后端
 mvn spring-boot:run
 
-# 4. 启动前端（选择一个）
-cd front-admin && npm run dev   # 管理后台
-cd front-user && npm run dev    # 用户端
-cd front-worker && npm run dev  # 服务者端
+# 5. 启动前端 (选择其中一个)
+cd front-admin && npm install && npm run dev  # 管理后台 :3000
+cd front-user && npm install && npm run dev   # 用户端 :5173
+cd front-worker && npm install && npm run dev # 工人端 :5174
 ```
 
 ### Docker 部署
@@ -132,6 +159,10 @@ cd front-worker && npm run dev  # 服务者端
 ```bash
 cd home-serve
 docker compose up -d
+
+# 访问
+# 前端: http://localhost
+# API: http://localhost:8080
 ```
 
 ## API 文档
@@ -143,6 +174,8 @@ docker compose up -d
 | `/api/user/login` | POST | 用户登录 |
 | `/api/user/register` | POST | 用户注册 |
 | `/api/user/info` | GET | 获取用户信息 |
+| `/api/user/phone` | PUT | 修改手机号 |
+| `/api/user/password` | PUT | 修改密码 |
 
 ### 服务模块
 
@@ -164,6 +197,14 @@ docker compose up -d
 | `/api/order/cancel` | POST | 取消订单 |
 | `/api/order/start` | POST | 开始服务 |
 | `/api/order/finish` | POST | 完成服务 |
+
+### 管理模块
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/admin/stats` | GET | 数据统计 |
+| `/api/admin/users` | GET | 用户管理 |
+| `/api/admin/orders` | GET | 订单管理 |
 
 ## 贡献者
 
@@ -191,8 +232,8 @@ AI 助手（麻辣小龙虾）协助完成：
 - [x] 阿里云部署
 - [x] 用户端前端
 - [x] 服务者端前端
-- [ ] 支付模块（模拟支付）
-- [ ] 评价模块（双向评价）
+- [x] 支付模块（模拟支付）
+- [x] 评价模块（双向评价）
 - [ ] 性能优化与压测
 
 ## 部署状态
@@ -204,21 +245,35 @@ AI 助手（麻辣小龙虾）协助完成：
 
 ## 更新日志
 
-### v1.1.0 (2026-03-09)
-- ✅ 用户端前端开发完成（首页、服务列表、预约下单、订单管理、用户中心）
-- ✅ 服务者端前端开发完成（抢单池、抢单功能、订单管理、收入统计）
-- ✅ 飞书通道配置完成
+### v1.1.0 (2026-04)
 
-### v1.0.0 (2026-03-06)
-- ✅ 完成后端核心功能开发
-- ✅ 完成 Vue3 + Element Plus 管理后台
-- ✅ Redis 缓存、分布式锁、限流功能实现
-- ✅ 抢单核心流程实现
-- ✅ 阿里云部署成功
+- 参数校验增强 (Order/UserController)
+- 用户端/工人端登录区分
+- 分布式锁优化 (防止重复抢单)
+- 订单状态管理改进
+- 缓存清除修复
+- 单元测试覆盖
+- IP限流优化
+- 新增修改密码、手机号功能
+
+### v1.0.1 (2026-04)
+
+- 三端 UI 重构 (Lucide Icons)
+- 新增骨架屏、空状态组件
+- 微信小程序基础框架
+- 后端分布式锁优化
+- 单元测试覆盖
+
+### v1.0.0 (2026-03)
+
+- 后端核心功能完成
+- 三端前端框架搭建
+- Redis 缓存与分布式锁
+- Docker 部署支持
 
 ## 许可证
 
-MIT License
+MIT License - 查看 [LICENSE](LICENSE) 了解更多
 
 ---
 
