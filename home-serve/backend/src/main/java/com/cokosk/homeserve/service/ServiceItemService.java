@@ -186,6 +186,29 @@ public class ServiceItemService extends ServiceImpl<ServiceItemMapper, ServiceIt
     }
     
     /**
+     * 搜索服务
+     */
+    public List<ServiceItem> searchServices(String keyword, Long categoryId) {
+        QueryWrapper<ServiceItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", 1);
+        
+        if (keyword != null && !keyword.isEmpty()) {
+            queryWrapper.and(wrapper -> wrapper
+                .like("name", keyword)
+                .or()
+                .like("description", keyword));
+        }
+        
+        if (categoryId != null && categoryId > 0) {
+            queryWrapper.eq("category_id", categoryId);
+        }
+        
+        queryWrapper.orderByDesc("create_time");
+        
+        return this.list(queryWrapper);
+    }
+    
+    /**
      * 更新服务后清除缓存
      */
     public boolean updateService(ServiceItem service) {

@@ -7,6 +7,7 @@ import com.cokosk.homeserve.service.ServiceItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +95,29 @@ public class ServiceController {
             result.put("code", 404);
             result.put("message", "服务不存在");
         }
+        
+        return result;
+    }
+    
+    /**
+     * 搜索服务
+     */
+    @GetMapping("/search")
+    public Map<String, Object> searchServices(
+            @RequestParam String keyword,
+            @RequestParam(required = false) Long categoryId) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (keyword == null || keyword.trim().isEmpty()) {
+            result.put("code", 400);
+            result.put("message", "关键词不能为空");
+            return result;
+        }
+        
+        List<ServiceItem> services = serviceItemService.searchServices(keyword.trim(), categoryId);
+        
+        result.put("code", 200);
+        result.put("data", services);
         
         return result;
     }

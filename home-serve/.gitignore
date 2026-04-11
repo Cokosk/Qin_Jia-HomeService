@@ -29,4 +29,16 @@ Thumbs.db
 *~
 
 # Application
-application-local.ymlMEMORY.md
+application-local.yml
+.env.local
+.env.production
+
+# Frontend - node_modules
+*/node_modules/
+*/dist/
+*/.vite/
+*/dist-ssr/
+*.local
+
+# Backend config
+config/

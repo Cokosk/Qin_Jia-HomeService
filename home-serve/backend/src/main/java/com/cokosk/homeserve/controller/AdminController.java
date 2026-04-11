@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cokosk.homeserve.entity.Order;
 import com.cokosk.homeserve.entity.Review;
+import com.cokosk.homeserve.entity.ServiceCategory;
 import com.cokosk.homeserve.entity.ServiceItem;
 import com.cokosk.homeserve.entity.User;
 import com.cokosk.homeserve.service.OrderService;
 import com.cokosk.homeserve.service.ReviewService;
+import com.cokosk.homeserve.service.ServiceCategoryService;
 import com.cokosk.homeserve.service.ServiceItemService;
 import com.cokosk.homeserve.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +31,7 @@ import java.util.Map;
 public class AdminController {
     
     private final UserService userService;
+    private final ServiceCategoryService categoryService;
     private final ServiceItemService serviceItemService;
     private final OrderService orderService;
     private final ReviewService reviewService;
@@ -665,6 +669,176 @@ public class AdminController {
         
         result.put("code", 200);
         result.put("data", stats);
+        
+        return result;
+    }
+    
+    // ==================== 分类管理 ====================
+    
+    /**
+     * 分类列表
+     * GET /api/admin/category/list
+     */
+    @GetMapping("/category/list")
+    public Map<String, Object> getCategoryList() {
+        Map<String, Object> result = new HashMap<>();
+        
+        List<ServiceCategory> categories = categoryService.list(
+            new QueryWrapper<ServiceCategory>().orderByAsc("sort")
+        );
+        
+        result.put("code", 200);
+        result.put("data", categories);
+        
+        return result;
+    }
+    
+    /**
+     * 添加分类
+     * POST /api/admin/category/add
+     */
+    @PostMapping("/category/add")
+    public Map<String, Object> addCategory(@RequestBody ServiceCategory category) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (category.getName() == null || category.getName().isEmpty()) {
+            result.put("code", 400);
+            result.put("message", "分类名称不能为空");
+            return result;
+        }
+        
+        if (category.getStatus() == null) {
+            category.setStatus(1);
+        }
+        
+        boolean saved = categoryService.save(category);
+        
+        if (saved) {
+            categoryService.clearCache();
+            log.info("管理员添加分类: name={}", category.getName());
+            result.put("code", 200);
+            result.put("message", "分类添加成功");
+            result.put("data", category);
+        } else {
+            result.put("code", 500);
+            result.put("message", "添加失败");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 更新分类
+     * POST /api/admin/category/update
+     */
+    @PostMapping("/category/update")
+    public Map<String, Object> updateCategory(@RequestBody ServiceCategory category) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (category.getId() == null || category.getId() <= 0) {
+            result.put("code", 400);
+            result.put("message", "分类ID无效");
+            return result;
+        }
+        
+        ServiceCategory existCategory = categoryService.getById(category.getId());
+        if (existCategory == null) {
+            result.put("code", 404);
+            result.put("message", "分类不存在");
+            return result;
+        }
+        
+        boolean updated = categoryService.updateCategory(category);
+        
+        if (updated) {
+            categoryService.clearCache();
+            log.info("管理员更新分类: id={}", category.getId());
+            result.put("code", 200);
+            result.put("message", "分类更新成功");
+        } else {
+            result.put("code", 500);
+            result.put("message", "更新失败");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 删除分类
+     * POST /api/admin/category/delete
+     */
+    @PostMapping("/category/delete")
+    public Map<String, Object> deleteCategory(@RequestParam Long categoryId) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (categoryId == null || categoryId <= 0) {
+            result.put("code", 400);
+            result.put("message", "分类ID无效");
+            return result;
+        }
+        
+        ServiceCategory category = categoryService.getById(categoryId);
+        if (category == null) {
+            result.put("code", 404);
+            result.put("message", "分类不存在");
+            return result;
+        }
+        
+        boolean deleted = categoryService.removeById(categoryId);
+        
+        if (deleted) {
+            categoryService.clearCache();
+            log.info("管理员删除分类: categoryId={}", categoryId);
+            result.put("code", 200);
+            result.put("message", "分类已删除");
+        } else {
+            result.put("code", 500);
+            result.put("message", "删除失败");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 更新分类状态
+     * POST /api/admin/category/status
+     */
+    @PostMapping("/category/status")
+    public Map<String, Object> updateCategoryStatus(
+            @RequestParam Long categoryId,
+            @RequestParam Integer status) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (categoryId == null || categoryId <= 0) {
+            result.put("code", 400);
+            result.put("message", "分类ID无效");
+            return result;
+        }
+        if (status == null || (status != 0 && status != 1)) {
+            result.put("code", 400);
+            result.put("message", "状态值无效");
+            return result;
+        }
+        
+        ServiceCategory category = categoryService.getById(categoryId);
+        if (category == null) {
+            result.put("code", 404);
+            result.put("message", "分类不存在");
+            return result;
+        }
+        
+        category.setStatus(status);
+        boolean updated = categoryService.updateById(category);
+        
+        if (updated) {
+            categoryService.clearCache();
+            log.info("管理员更新分类状态: categoryId={}, status={}", categoryId, status);
+            result.put("code", 200);
+            result.put("message", status == 1 ? "分类已启用" : "分类已禁用");
+        } else {
+            result.put("code", 500);
+            result.put("message", "操作失败");
+        }
         
         return result;
     }

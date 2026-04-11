@@ -1,5 +1,6 @@
 server:
   port: ${SERVER_PORT:8080}
+  address: ${SERVER_ADDRESS:0.0.0.0}
   tomcat:
     threads:
       max: 200
@@ -7,9 +8,22 @@ server:
     accept-count: 100
     max-connections: 10000
 
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
 spring:
   application:
     name: home-serve
+
+  # HTTP编码配置
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: RESPONSE
 
   # MySQL 配置
   datasource:

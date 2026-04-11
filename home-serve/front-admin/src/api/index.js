@@ -1,17 +1,6 @@
-import axios from 'axios'
+import { createRequest, token } from '../utils/request'
 
-const instance = axios.create({
-  baseURL: '/api',
-  timeout: 15000
-})
-
-instance.interceptors.request.use(config => {
-  const token = localStorage.getItem('admin_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
+const instance = createRequest({ tokenKey: 'admin_token' })
 
 instance.interceptors.response.use(
   response => response.data,
@@ -19,15 +8,20 @@ instance.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          localStorage.removeItem('admin_token')
+          token.clear()
           window.location.href = '/login'
           break
         case 403:
           console.error('权限不足')
           break
+        case 404:
+          console.error('请求资源不存在')
+          break
         case 500:
           console.error('服务器错误')
           break
+        default:
+          console.error('请求失败')
       }
     } else if (error.code === 'ECONNABORTED') {
       console.error('请求超时')
@@ -50,6 +44,12 @@ const api = {
     updateService: (data) => instance.post('/admin/service/update', data),
     updateServiceStatus: (serviceId, status) => instance.post('/admin/service/status', null, { params: { serviceId, status } }),
     deleteService: (serviceId) => instance.post('/admin/service/delete', null, { params: { serviceId } }),
+    
+    getCategoryList: () => instance.get('/admin/category/list'),
+    addCategory: (data) => instance.post('/admin/category/add', data),
+    updateCategory: (data) => instance.post('/admin/category/update', data),
+    deleteCategory: (categoryId) => instance.post('/admin/category/delete', null, { params: { categoryId } }),
+    updateCategoryStatus: (categoryId, status) => instance.post('/admin/category/status', null, { params: { categoryId, status } }),
     
     getOrderList: (params) => instance.get('/admin/order/list', { params }),
     cancelOrder: (orderId) => instance.post('/admin/order/cancel', null, { params: { orderId } }),

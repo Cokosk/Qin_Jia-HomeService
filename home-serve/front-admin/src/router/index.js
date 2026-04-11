@@ -1,31 +1,72 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Orders from '../views/Orders.vue'
-import Services from '../views/Services.vue'
-import Users from '../views/Users.vue'
-import Workers from '../views/Workers.vue'
-import Analytics from '../views/Analytics.vue'
-import Finance from '../views/Finance.vue'
-import Settlement from '../views/Settlement.vue'
-import Settings from '../views/Settings.vue'
-import Logs from '../views/Logs.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/analytics', name: 'Analytics', component: Analytics },
-  { path: '/orders', name: 'Orders', component: Orders },
-  { path: '/users', name: 'Users', component: Users },
-  { path: '/workers', name: 'Workers', component: Workers },
-  { path: '/services', name: 'Services', component: Services },
-  { path: '/finance', name: 'Finance', component: Finance },
-  { path: '/settlement', name: 'Settlement', component: Settlement },
-  { path: '/settings', name: 'Settings', component: Settings },
-  { path: '/logs', name: 'Logs', component: Logs }
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/auth/Login.vue'),
+    meta: { guest: true }
+  },
+  {
+    path: '/',
+    name: 'Dashboard',
+    component: () => import('../views/dashboard/Index.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: () => import('../views/users/List.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    component: () => import('../views/categories/List.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/services',
+    name: 'Services',
+    component: () => import('../views/services/List.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/orders',
+    name: 'Orders',
+    component: () => import('../views/orders/List.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/orders/:id',
+    name: 'OrderDetail',
+    component: () => import('../views/orders/Detail.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/reviews',
+    name: 'Reviews',
+    component: () => import('../views/reviews/List.vue'),
+    meta: { requiresAuth: true }
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+// 路由守卫
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('admin_token')
+  
+  if (to.meta.requiresAuth && !token) {
+    next({ path: '/login', query: { redirect: to.fullPath } })
+  } else if (to.meta.guest && token) {
+    next('/')
+  } else {
+    next()
+  }
 })
 
 export default router
